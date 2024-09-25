@@ -26,3 +26,7 @@ go.work.sum
 
 # vscode
 .vscode
+
+# build artifacts
+build/
+uds-releaser
