@@ -6,7 +6,7 @@ import (
 )
 
 func DoesTagExist(tag string) (bool, error) {
-	repo, err := git.PlainOpen(".")
+	repo, err := OpenRepo()
 	if err != nil {
 		return false, err
 	}
@@ -27,4 +27,12 @@ func DoesTagExist(tag string) (bool, error) {
 		return tagExists, err
 	}
 	return tagExists, nil
+}
+
+func OpenRepo() (*git.Repository, error) {
+	repo, err := git.PlainOpen(".")
+	if err != nil {
+		return nil, err
+	}
+	return repo, nil
 }

@@ -16,21 +16,15 @@ limitations under the License.
 package cmd
 
 import (
-	"github.com/defenseunicorns/uds-releaser/src/gitlab"
 	"github.com/defenseunicorns/uds-releaser/src/utils"
+	"github.com/defenseunicorns/uds-releaser/src/version"
 	"github.com/spf13/cobra"
 )
 
-// gitlabCmd represents the gitlab command
-var gitlabCmd = &cobra.Command{
-	Use:   "gitlab",
-	Short: "Collection of commands for releasing on GitLab",
-}
-
-// releaseCmd represents the release command
-var releaseCmd = &cobra.Command{
-	Use:   "release [ flavor ]",
-	Short: "Create a tag and release on GitLab based on flavor",
+// mutateCmd represents the mutate command
+var mutateCmd = &cobra.Command{
+	Use:   "mutate [ flavor ]",
+	Short: "Mutate version fields in the zarf.yaml and uds-bundle.yaml based on flavor",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		releaserConfig, err := utils.LoadReleaserConfig()
@@ -43,14 +37,16 @@ var releaseCmd = &cobra.Command{
 			return err
 		}
 
-		err = gitlab.TagAndRelease(currentFlavor)
+		err = version.MutateYamls(currentFlavor)
+		if err != nil {
+			return err
+		}
 		return nil
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(gitlabCmd)
-	gitlabCmd.AddCommand(releaseCmd)
+	rootCmd.AddCommand(mutateCmd)
 
 	// Here you will define your flags and configuration settings.
 

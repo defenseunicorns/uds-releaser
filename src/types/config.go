@@ -5,7 +5,7 @@ type Flavor struct {
 	Version           string `yaml:"version"`
 	PublishBundle     bool   `yaml:"publishBundle,omitempty,default=false"`
 	PublishPackageUrl string `yaml:"publishPackageUrl"`
-	PublishBundleUrl  string `yaml:"publishBundleUrl"`
+	PublishBundleUrl  string `yaml:"publishBundleUrl,omitempty"`
 }
 
 type ReleaserConfig struct {
