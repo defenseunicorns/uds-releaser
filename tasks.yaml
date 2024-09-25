@@ -1,0 +1,50 @@
+# Copyright © 2024 The Authors of uds-releaser
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#   http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+includes:
+  - test: tasks/tests.yaml
+  - schema: tasks/schema.yaml
+  - docs: tasks/docs.yaml
+  - dev: tasks/dev.yaml
+
+tasks:
+  # build tasks
+  - name: build-all
+    description: build all the CLI binaries and gen checksums
+    actions:
+      - task: build-cli-linux-amd
+      - task: build-cli-linux-arm
+      - task: build-cli-mac-intel
+      - task: build-cli-mac-apple
+      - cmd: sha256sum build/* > build/checksums.txt
+
+  - name: build-cli-linux-amd
+    description: build the CLI for Linux AMD64
+    actions:
+      - cmd: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="${BUILD_ARGS}" -o build/uds-releaser main.go
+
+  - name: build-cli-linux-arm
+    description: build the CLI for Linux ARM64
+    actions:
+      - cmd: CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -ldflags="${BUILD_ARGS}" -o build/uds-releaser-arm main.go
+
+  - name: build-cli-mac-intel
+    description: build the CLI for Mac Intel
+    actions:
+      - cmd: GOOS=darwin GOARCH=amd64 go build -ldflags="${BUILD_ARGS}" -o build/uds-releaser-mac-intel main.go
+
+  - name: build-cli-mac-apple
+    description: build the CLI for Mac Apple
+    actions:
+      - cmd: GOOS=darwin GOARCH=arm64 go build -ldflags="${BUILD_ARGS}" -o build/uds-releaser-mac-apple main.go
