@@ -1,7 +1,6 @@
 package gitlab
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -34,9 +33,11 @@ func TagAndRelease(flavor types.Flavor) error {
 		if len(parts) > 2 {
 			gitlabBaseURL = fmt.Sprintf("https://%s/api/v4", parts[2])
 		} else {
-			return errors.New(fmt.Sprintf("error parsing gitlab base url from remote url: %s", remoteURL))
+			return fmt.Errorf("error parsing gitlab base url from remote url: %s", remoteURL)
 		}
 	}
+
+	fmt.Printf("GitLab base URL: %s\n", gitlabBaseURL)
 
 	// Get the default branch of the current repository
 	ref, err := repo.Head()
@@ -46,8 +47,10 @@ func TagAndRelease(flavor types.Flavor) error {
 
 	defaultBranch := ref.Name().Short()
 
+	fmt.Printf("Default branch: %s\n", defaultBranch)
+
 	// Create a new GitLab client
-	gitlabClient, err := gitlab.NewClient(os.Getenv("CI_JOB_TOKEN"), gitlab.WithBaseURL(gitlabBaseURL))
+	gitlabClient, err := gitlab.NewClient(os.Getenv("GITLAB_RELEASE_TOKEN"), gitlab.WithBaseURL(gitlabBaseURL))
 	if err != nil {
 		return err
 	}
@@ -66,17 +69,19 @@ func TagAndRelease(flavor types.Flavor) error {
 		Assets: &gitlab.ReleaseAssetsOptions{
 			Links: []*gitlab.ReleaseAssetLinkOptions{
 				{
-					Name: gitlab.Ptr("zarf.yaml"), // TODO
-					URL:  gitlab.Ptr("https://example.com/zarf.yaml"), // TODO
+					Name:     gitlab.Ptr("zarf.yaml"),                     // TODO
+					URL:      gitlab.Ptr("https://example.com/zarf.yaml"), // TODO
 					LinkType: gitlab.Ptr(gitlab.PackageLinkType),
 				},
 				{
-					Name: gitlab.Ptr("uds-bundle.yaml"), // TODO
+					Name: gitlab.Ptr("uds-bundle.yaml"),                     // TODO
 					URL:  gitlab.Ptr("https://example.com/uds-bundle.yaml"), // TODO
 				},
 			},
 		},
 	}
+
+	fmt.Printf("Creating release %s-%s\n", flavor.Version, flavor.Name)
 
 	// Create the release
 	release, _, err := gitlabClient.Releases.CreateRelease(os.Getenv("CI_PROJECT_ID"), releaseOpts)

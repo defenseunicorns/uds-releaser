@@ -43,7 +43,12 @@ var releaseCmd = &cobra.Command{
 			return err
 		}
 
+		rootCmd.SilenceUsage = true
+
 		err = gitlab.TagAndRelease(currentFlavor)
+		if err != nil {
+			return err
+		}
 		return nil
 	},
 }

@@ -16,15 +16,17 @@ limitations under the License.
 package cmd
 
 import (
+	"errors"
+	"fmt"
+
 	"github.com/defenseunicorns/uds-releaser/src/utils"
-	"github.com/defenseunicorns/uds-releaser/src/version"
 	"github.com/spf13/cobra"
 )
 
-// mutateCmd represents the mutate command
-var mutateCmd = &cobra.Command{
-	Use:   "mutate [ flavor ]",
-	Short: "Mutate version fields in the zarf.yaml and uds-bundle.yaml based on flavor",
+// checkCmd represents the check command
+var checkCmd = &cobra.Command{
+	Use:   "check [ flavor ]",
+	Short: "check if release is necessary for given flavor",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		releaserConfig, err := utils.LoadReleaserConfig()
@@ -39,16 +41,24 @@ var mutateCmd = &cobra.Command{
 
 		rootCmd.SilenceUsage = true
 
-		err = version.MutateYamls(currentFlavor)
+		versionAndFlavor := fmt.Sprintf("%s-%s", currentFlavor.Version, currentFlavor.Name)
+
+		tagExists, err := utils.DoesTagExist(versionAndFlavor)
 		if err != nil {
 			return err
 		}
-		return nil
+		if tagExists {
+			fmt.Printf("Version %s is already tagged\n", versionAndFlavor)
+			return errors.New("no release necessary")
+		} else {
+			fmt.Printf("Version %s is not tagged\n", versionAndFlavor)
+			return nil
+		}
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(mutateCmd)
+	rootCmd.AddCommand(checkCmd)
 
 	// Here you will define your flags and configuration settings.
 
