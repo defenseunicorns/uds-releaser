@@ -23,16 +23,9 @@ func DoesTagExist(tag string) (bool, error) {
 		}
 		return nil
 	})
-	if err != nil {
-		return tagExists, err
-	}
-	return tagExists, nil
+	return tagExists, err
 }
 
 func OpenRepo() (*git.Repository, error) {
-	repo, err := git.PlainOpen(".")
-	if err != nil {
-		return nil, err
-	}
-	return repo, nil
+	return git.PlainOpen(".")
 }

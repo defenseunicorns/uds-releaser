@@ -24,11 +24,7 @@ func LoadYaml(path string, destVar interface{}) error {
 		return err
 	}
 
-	err = goyaml.Unmarshal(data, destVar)
-	if err != nil {
-		return err
-	}
-	return nil
+	return goyaml.Unmarshal(data, destVar)
 }
 
 func UpdateYaml(path string, srcVar interface{}) error {
@@ -42,9 +38,5 @@ func UpdateYaml(path string, srcVar interface{}) error {
 		return err
 	}
 
-	err = os.WriteFile(path, data, yamlInfo.Mode())
-	if err != nil {
-		return err
-	}
-	return nil
+	return os.WriteFile(path, data, yamlInfo.Mode())
 }

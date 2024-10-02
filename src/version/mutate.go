@@ -15,11 +15,7 @@ func MutateYamls(flavor types.Flavor) error {
 		return err
 	}
 
-	err = mutateBundleYaml(flavor, packageName)
-	if err != nil {
-		return err
-	}
-	return nil
+	return mutateBundleYaml(flavor, packageName)
 }
 
 func mutateZarfYaml(flavor types.Flavor) (packageName string, err error) {
