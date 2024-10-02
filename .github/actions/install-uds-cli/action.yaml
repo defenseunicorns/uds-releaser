@@ -6,8 +6,11 @@ runs:
   - name: Set up Homebrew
     uses: Homebrew/actions/setup-homebrew@c4fb4dcc8c58d57ae2e382a04d5444995c9c1917 # master
 
+  - name: Set UDS CLI Arch
+    id: setUdsCliArch
+    shell: bash
+    run: INPUT=${{ runner.arch == 'X64' && 'amd64' || runner.arch }}; echo "ARCH=${INPUT,,}" >> "$GITHUB_OUTPUT"
+
   - name: Install UDS CLI
     shell: bash
-    run: |
-      brew tap defenseunicorns/tap
-      brew install uds
+    run: curl -o /usr/local/bin/uds -L https://github.com/defenseunicorns/uds-cli/releases/download/v${{ inputs.udsCliVersion }}/uds-cli_v${{ inputs.udsCliVersion }}_Linux_${{steps.setUdsCliArch.outputs.ARCH}} && chmod +x /usr/local/bin/uds
