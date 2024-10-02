@@ -24,11 +24,11 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "uds-releaser",
-	Short: "UDS Releaser is a tool for releasing UDS packages on gitlab",
+	Short: "UDS Releaser is a tool for releasing UDS packages",
 	Long: `UDS Releaser is a tool that facilitates the release
-	of UDS packages on gitlab. It provides commands for checking if a release is necessary,
+	of UDS packages. It provides commands for checking if a release is necessary,
 	mutating version fields in the zarf.yaml and uds-bundle.yaml files, and creating tags
-	and releases on gitlab.`,
+	and releases.`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
