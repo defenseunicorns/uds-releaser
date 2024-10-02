@@ -1,11 +1,16 @@
 name: Install UDS CLI
-description: installs uds-cli from brew
+description: installs uds-cli
+
+
+inputs:
+  udsCliVersion:
+    description: The uds-cli version to install
+    # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
+    default: 0.16.0
+
 runs:
   using: composite
   steps:
-  - name: Set up Homebrew
-    uses: Homebrew/actions/setup-homebrew@c4fb4dcc8c58d57ae2e382a04d5444995c9c1917 # master
-
   - name: Set UDS CLI Arch
     id: setUdsCliArch
     shell: bash
