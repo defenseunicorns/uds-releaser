@@ -1,0 +1,19 @@
+{
+  "extends": [
+    "github>defenseunicorns/uds-common//config/renovate.json5",
+    ":semanticCommits",
+    ":semanticPrefixFixDepsChoreOthers",
+    "group:all",
+    "replacements:all",
+    "workarounds:all"
+  ],
+  "schedule": ["after 7am and before 9am every weekday"],
+  "packageRules": [
+    {
+      "groupName": "UDS Releaser Support Dependencies",
+      "labels": ["support-deps"],
+      "commitMessageTopic": "support-deps",
+      "packagePatterns": ["*"]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+name: Install UDS CLI
+description: installs uds-cli
+
+
+inputs:
+  udsCliVersion:
+    description: The uds-cli version to install
+    # renovate: datasource=github-tags depName=defenseunicorns/uds-cli versioning=semver
+    default: 0.16.0
+
+runs:
+  using: composite
+  steps:
+  - name: Set UDS CLI Arch
+    id: setUdsCliArch
+    shell: bash
+    run: INPUT=${{ runner.arch == 'X64' && 'amd64' || runner.arch }}; echo "ARCH=${INPUT,,}" >> "$GITHUB_OUTPUT"
+
+  - name: Install UDS CLI
+    shell: bash
+    run: curl -o /usr/local/bin/uds -L https://github.com/defenseunicorns/uds-cli/releases/download/v${{ inputs.udsCliVersion }}/uds-cli_v${{ inputs.udsCliVersion }}_Linux_${{steps.setUdsCliArch.outputs.ARCH}} && chmod +x /usr/local/bin/uds

@@ -45,25 +45,11 @@ var releaseCmd = &cobra.Command{
 
 		rootCmd.SilenceUsage = true
 
-		err = gitlab.TagAndRelease(currentFlavor)
-		if err != nil {
-			return err
-		}
-		return nil
+		return gitlab.TagAndRelease(currentFlavor)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(gitlabCmd)
 	gitlabCmd.AddCommand(releaseCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// gitlabCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// gitlabCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
