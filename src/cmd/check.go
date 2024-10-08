@@ -23,10 +23,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var boolOutput bool
+
 // checkCmd represents the check command
 var checkCmd = &cobra.Command{
 	Use:   "check [ flavor ]",
-	Short: "check if release is necessary for given flavor",
+	Short: "Check if release is necessary for given flavor",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		releaserConfig, err := utils.LoadReleaserConfig()
@@ -48,15 +50,24 @@ var checkCmd = &cobra.Command{
 			return err
 		}
 		if tagExists {
-			fmt.Printf("Version %s is already tagged\n", versionAndFlavor)
-			return errors.New("no release necessary")
+			if boolOutput {
+				fmt.Println("false")
+			} else {
+				fmt.Printf("Version %s is already tagged\n", versionAndFlavor)
+				return errors.New("no release necessary")
+			}
 		} else {
-			fmt.Printf("Version %s is not tagged\n", versionAndFlavor)
-			return nil
+			if boolOutput {
+				fmt.Println("true")
+			} else {
+				fmt.Printf("Version %s is not tagged\n", versionAndFlavor)
+			}
 		}
+		return nil
 	},
 }
 
 func init() {
+	checkCmd.Flags().BoolVarP(&boolOutput, "boolean", "b", false, "Switch the output string to a true/false based on if a release is necessary. True if a release is necessary, false if not.")
 	rootCmd.AddCommand(checkCmd)
 }
