@@ -4,7 +4,10 @@ go 1.22.6
 
 require (
 	github.com/defenseunicorns/uds-cli v0.16.0
+	github.com/go-git/go-git/v5 v5.12.0
+	github.com/goccy/go-yaml v1.12.0
 	github.com/spf13/cobra v1.8.1
+	github.com/xanzy/go-gitlab v0.109.0
 	github.com/zarf-dev/zarf v0.39.0
 )
 
@@ -24,6 +27,7 @@ require (
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.7 // indirect
+	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/invopop/jsonschema v0.12.0 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
 	github.com/kevinburke/ssh_config v1.2.0 // indirect
@@ -34,6 +38,7 @@ require (
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/sergi/go-diff v1.3.2-0.20230802210424-5b0b94c5c0d3 // indirect
 	github.com/skeema/knownhosts v1.2.2 // indirect
+	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/wk8/go-ordered-map/v2 v2.1.8 // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
 	golang.org/x/crypto v0.27.0 // indirect
@@ -47,12 +52,4 @@ require (
 	golang.org/x/xerrors v0.0.0-20231012003039-104605ab7028 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-)
-
-require (
-	github.com/go-git/go-git/v5 v5.12.0
-	github.com/goccy/go-yaml v1.12.0
-	github.com/inconshreveable/mousetrap v1.1.0 // indirect
-	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/xanzy/go-gitlab v0.109.0
 )
