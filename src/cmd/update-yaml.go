@@ -1,5 +1,5 @@
 /*
-Copyright © 2024 The Authors of uds-releaser
+Copyright © 2024 Defense Unicorns
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// updateyamlCmd represents the updateyaml command
+// updateYamlCmd represents the updateyaml command
 var updateYamlCmd = &cobra.Command{
 	Use:     "update-yaml flavor",
 	Aliases: []string{"u"},
@@ -45,5 +45,5 @@ var updateYamlCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(updateyamlCmd)
+	rootCmd.AddCommand(updateYamlCmd)
 }
