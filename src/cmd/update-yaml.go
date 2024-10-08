@@ -22,7 +22,7 @@ import (
 )
 
 // updateyamlCmd represents the updateyaml command
-var updateyamlCmd = &cobra.Command{
+var updateYamlCmd = &cobra.Command{
 	Use:     "update-yaml flavor",
 	Aliases: []string{"u"},
 	Short:   "Update the version fields in the zarf.yaml and uds-bundle.yaml based on flavor",
