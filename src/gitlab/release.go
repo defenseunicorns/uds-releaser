@@ -64,21 +64,8 @@ func TagAndRelease(flavor types.Flavor) error {
 	releaseOpts := &gitlab.CreateReleaseOptions{
 		Name:        gitlab.Ptr(fmt.Sprintf("%s %s-%s", zarfPackageName, flavor.Version, flavor.Name)),
 		TagName:     gitlab.Ptr(fmt.Sprintf("%s-%s", flavor.Version, flavor.Name)),
-		Description: gitlab.Ptr("Release description"),
+		Description: gitlab.Ptr(fmt.Sprintf("%s %s-%s", zarfPackageName, flavor.Version, flavor.Name)),
 		Ref:         gitlab.Ptr(defaultBranch),
-		Assets: &gitlab.ReleaseAssetsOptions{
-			Links: []*gitlab.ReleaseAssetLinkOptions{
-				{
-					Name:     gitlab.Ptr("zarf.yaml"),                     // TODO
-					URL:      gitlab.Ptr("https://example.com/zarf.yaml"), // TODO
-					LinkType: gitlab.Ptr(gitlab.PackageLinkType),
-				},
-				{
-					Name: gitlab.Ptr("uds-bundle.yaml"),                     // TODO
-					URL:  gitlab.Ptr("https://example.com/uds-bundle.yaml"), // TODO
-				},
-			},
-		},
 	}
 
 	fmt.Printf("Creating release %s-%s\n", flavor.Version, flavor.Name)
