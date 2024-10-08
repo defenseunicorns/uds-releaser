@@ -24,7 +24,7 @@ import (
 
 // showCmd represents the show command
 var showCmd = &cobra.Command{
-	Use:   "show [ flavor ]",
+	Use:   "show flavor",
 	Short: "Show the current version for a given flavor",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {

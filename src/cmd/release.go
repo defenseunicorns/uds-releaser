@@ -23,13 +23,7 @@ import (
 
 // gitlabCmd represents the gitlab command
 var gitlabCmd = &cobra.Command{
-	Use:   "gitlab",
-	Short: "Collection of commands for releasing on GitLab",
-}
-
-// releaseCmd represents the release command
-var releaseCmd = &cobra.Command{
-	Use:   "release [ flavor ]",
+	Use:   "gitlab flavor",
 	Short: "Create a tag and release on GitLab based on flavor",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -49,7 +43,13 @@ var releaseCmd = &cobra.Command{
 	},
 }
 
+// releaseCmd represents the release command
+var releaseCmd = &cobra.Command{
+	Use:   "release platform",
+	Short: "Collection of commands for releasing on different platforms",
+}
+
 func init() {
-	rootCmd.AddCommand(gitlabCmd)
-	gitlabCmd.AddCommand(releaseCmd)
+	rootCmd.AddCommand(releaseCmd)
+	releaseCmd.AddCommand(gitlabCmd)
 }

@@ -27,7 +27,7 @@ var boolOutput bool
 
 // checkCmd represents the check command
 var checkCmd = &cobra.Command{
-	Use:   "check [ flavor ]",
+	Use:   "check flavor",
 	Short: "Check if release is necessary for given flavor",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {

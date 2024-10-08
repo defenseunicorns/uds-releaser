@@ -9,16 +9,16 @@ import (
 	zarf "github.com/zarf-dev/zarf/src/api/v1alpha1"
 )
 
-func MutateYamls(flavor types.Flavor) error {
-	packageName, err := mutateZarfYaml(flavor)
+func UpdateYamls(flavor types.Flavor) error {
+	packageName, err := updateZarfYaml(flavor)
 	if err != nil {
 		return err
 	}
 
-	return mutateBundleYaml(flavor, packageName)
+	return updateBundleYaml(flavor, packageName)
 }
 
-func mutateZarfYaml(flavor types.Flavor) (packageName string, err error) {
+func updateZarfYaml(flavor types.Flavor) (packageName string, err error) {
 	var zarfPackage zarf.ZarfPackage
 	err = utils.LoadYaml("zarf.yaml", &zarfPackage)
 	if err != nil {
@@ -37,7 +37,7 @@ func mutateZarfYaml(flavor types.Flavor) (packageName string, err error) {
 	return zarfPackage.Metadata.Name, nil
 }
 
-func mutateBundleYaml(flavor types.Flavor, packageName string) error {
+func updateBundleYaml(flavor types.Flavor, packageName string) error {
 	var bundle uds.UDSBundle
 	err := utils.LoadYaml("bundle/uds-bundle.yaml", &bundle)
 	if err != nil {
