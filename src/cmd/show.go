@@ -1,5 +1,5 @@
 /*
-Copyright © 2024 The Authors of uds-releaser
+Copyright © 2024 Defense Unicorns
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,21 +16,16 @@ limitations under the License.
 package cmd
 
 import (
-	"github.com/defenseunicorns/uds-releaser/src/gitlab"
+	"fmt"
+
 	"github.com/defenseunicorns/uds-releaser/src/utils"
 	"github.com/spf13/cobra"
 )
 
-// gitlabCmd represents the gitlab command
-var gitlabCmd = &cobra.Command{
-	Use:   "gitlab",
-	Short: "Collection of commands for releasing on GitLab",
-}
-
-// releaseCmd represents the release command
-var releaseCmd = &cobra.Command{
-	Use:   "release [ flavor ]",
-	Short: "Create a tag and release on GitLab based on flavor",
+// showCmd represents the show command
+var showCmd = &cobra.Command{
+	Use:   "show flavor",
+	Short: "Show the current version for a given flavor",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		releaserConfig, err := utils.LoadReleaserConfig()
@@ -45,11 +40,12 @@ var releaseCmd = &cobra.Command{
 
 		rootCmd.SilenceUsage = true
 
-		return gitlab.TagAndRelease(currentFlavor)
+		fmt.Printf("%s-%s\n", currentFlavor.Version, currentFlavor.Name)
+
+		return nil
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(gitlabCmd)
-	gitlabCmd.AddCommand(releaseCmd)
+	rootCmd.AddCommand(showCmd)
 }

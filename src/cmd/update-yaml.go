@@ -1,5 +1,5 @@
 /*
-Copyright © 2024 The Authors of uds-releaser
+Copyright © 2024 Defense Unicorns
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,11 +21,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// mutateCmd represents the mutate command
-var mutateCmd = &cobra.Command{
-	Use:   "mutate [ flavor ]",
-	Short: "Mutate version fields in the zarf.yaml and uds-bundle.yaml based on flavor",
-	Args:  cobra.ExactArgs(1),
+// updateYamlCmd represents the updateyaml command
+var updateYamlCmd = &cobra.Command{
+	Use:     "update-yaml flavor",
+	Aliases: []string{"u"},
+	Short:   "Update the version fields in the zarf.yaml and uds-bundle.yaml based on flavor",
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		releaserConfig, err := utils.LoadReleaserConfig()
 		if err != nil {
@@ -39,10 +40,10 @@ var mutateCmd = &cobra.Command{
 
 		rootCmd.SilenceUsage = true
 
-		return version.MutateYamls(currentFlavor)
+		return version.UpdateYamls(currentFlavor)
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(mutateCmd)
+	rootCmd.AddCommand(updateYamlCmd)
 }
