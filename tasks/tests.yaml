@@ -1,0 +1,6 @@
+tasks:
+  - name: e2e
+    description: run all the unit tests
+    actions:
+      - cmd: go test ./... -failfast -v -timeout 5m
+        dir: src/test/e2e

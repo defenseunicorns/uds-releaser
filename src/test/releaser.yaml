@@ -1,0 +1,13 @@
+flavors:
+  - name: base
+    version: "1.0.0-uds.0"
+  - name: prerelease
+    version: "1.0.0-uds.1"
+  - name: patch
+    version: "1.0.1-uds.0"
+  - name: minor
+    version: "1.1.0-uds.0"
+  - name: major
+    version: "2.0.0-uds.0"
+  - name: dummy
+    version: "testing"

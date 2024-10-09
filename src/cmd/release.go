@@ -27,7 +27,7 @@ var gitlabCmd = &cobra.Command{
 	Short: "Create a tag and release on GitLab based on flavor",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		releaserConfig, err := utils.LoadReleaserConfig()
+		releaserConfig, err := utils.LoadReleaserConfig(releaserDir)
 		if err != nil {
 			return err
 		}

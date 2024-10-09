@@ -21,6 +21,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var releaserDir string
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "uds-releaser",
@@ -40,4 +42,6 @@ func Execute() {
 	}
 }
 
-func init() {}
+func init() {
+	rootCmd.PersistentFlags().StringVarP(&releaserDir, "releaser-dir", "d", ".", "Path to the directory containing the releaser.yaml file")
+}
