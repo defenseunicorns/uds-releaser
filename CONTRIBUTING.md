@@ -14,11 +14,11 @@ Below are some notes on our core software design philosophies that should help g
 
 ## Code Quality and Standards
 
-Fundamentally, software engineering is a communication problem; we write code for each other, not a computer. When working on this project (or any project!) keep your fellow humans in mind and write clearly and concisely. Below are some general guidelines for code quality and standards that make UDS CLI :sparkles:
+Fundamentally, software engineering is a communication problem; we write code for each other, not a computer. When working on this project (or any project!) keep your fellow humans in mind and write clearly and concisely. Below are some general guidelines for code quality and standards that make UDS Releaser :sparkles:
 
 - **Write tests that give confidence**: Unless there is a technical blocker, every new feature and bug fix should be tested in the project's automated test suite. Although many of our tests are E2E, unit and integration-style tests are also welcomed. Note that unit tests can live in a `*_test.go` file alongside the source code, and E2E tests live in `src/test/e2e`
 
-- **Prefer readability over being clever**: We have a strong preference for code readability in UDS CLI. Specifically, this means things like: naming variables appropriately, keeping functions to a reasonable size and avoiding complicated solutions when simple ones exist.
+- **Prefer readability over being clever**: We have a strong preference for code readability in UDS Releaser. Specifically, this means things like: naming variables appropriately, keeping functions to a reasonable size and avoiding complicated solutions when simple ones exist.
 
 ### Continuous Delivery
 
@@ -33,7 +33,7 @@ Specifically:
 
 ## How to Contribute
 
-Please ensure there is a GitHub issue for your proposed change, this helps the UDS CLI team to understand the context of the change and to track the progress of the work. If there isn't an issue for your change, please create one before starting work. The recommended workflow for contributing is as follows:
+Please ensure there is a GitHub issue for your proposed change, this helps the UDS Releaser team to understand the context of the change and to track the progress of the work. If there isn't an issue for your change, please create one before starting work. The recommended workflow for contributing is as follows:
 
 1. **Fork this repo** and clone it locally
 1. **Create a branch** for your changes
@@ -52,7 +52,7 @@ In this repo you can optionally use [pre-commit](https://pre-commit.com/) hooks 
 
 ### Testing
 
-We strive to test all changes made to UDS CLI. If you're adding a new feature or fixing a bug, please add tests to cover the new functionality. Unit tests and E2E tests are both welcome, but we leave it up to the contributor to decide which is most appropriate for the change. Below are some guidelines for testing:
+We strive to test all changes made to UDS Releaser. If you're adding a new feature or fixing a bug, please add tests to cover the new functionality. Unit tests and E2E tests are both welcome, but we leave it up to the contributor to decide which is most appropriate for the change. Below are some guidelines for testing:
 
 #### Unit Tests
 
@@ -70,4 +70,4 @@ We prefer to use Testify's [require](https://github.com/stretchr/testify/tree/ma
 
 - **Unit Tests**: To run unit tests, run `uds run test:unit` from the root of the repo. This will run all unit tests in the `src` directory.
 
-- **E2E Tests**: To run E2E tests, you'll need build UDS CLI locally, and re-build any time you make a change to the source code; this is because the binary in the `build` directory is used to drive the tests. To run the entire suite of E2E tests locally, run `uds run test:e2e-no-ghcr-write` (note that this intentionally skips the tests that involve writing to GHCR).
+- **E2E Tests**: To run E2E tests, you'll need build UDS Releaser locally, and re-build any time you make a change to the source code; this is because the binary in the `build` directory is used to drive the tests. To run the entire suite of E2E tests locally, run `uds run test:e2e-no-ghcr-write` (note that this intentionally skips the tests that involve writing to GHCR).
