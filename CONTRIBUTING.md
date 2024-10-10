@@ -66,4 +66,4 @@ We prefer to use Testify's [require](https://github.com/stretchr/testify/tree/ma
 
 - **Unit Tests**: To run unit tests, run `uds run test:unit` from the root of the repo. This will run all unit tests in the `src` directory.
 
-- **E2E Tests**: To run E2E tests, you'll need build UDS Releaser locally, and re-build any time you make a change to the source code; this is because the binary in the `build` directory is used to drive the tests. To run the entire suite of E2E tests locally, run `uds run e2e`
+- **E2E Tests**: To run E2E tests, you'll need build UDS Releaser locally, and re-build any time you make a change to the source code; this is because the binary in the `build` directory is used to drive the tests. To run the entire suite of E2E tests locally, run `uds run e2e`.
