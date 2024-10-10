@@ -41,7 +41,7 @@ uds-releaser release <flavor>
 
 ## Configuration
 
-UDS-Releaser can be configured using a YAML file named uds-releaser.yml in your project's root directory.
+UDS-Releaser can be configured using a YAML file named uds-releaser.yaml in your project's root directory.
 
 ```yaml
 flavors:
