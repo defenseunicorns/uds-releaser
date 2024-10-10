@@ -1,0 +1,5 @@
+* @defenseunicorns/uds-core @defenseunicorns/swf @defenseunicorns/uds-appstore
+
+# Additional privileged files
+/CODEOWNERS @jeff-mccoy @daveworth
+/LICENSE @jeff-mccoy @daveworth
