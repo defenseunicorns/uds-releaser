@@ -14,7 +14,7 @@ Below are some notes on our core software design philosophies that should help g
 
 ## Code Quality and Standards
 
-Fundamentally, software engineering is a communication problem; we write code for each other, not a computer. When working on this project (or any project!) keep your fellow humans in mind and write clearly and concisely. Below are some general guidelines for code quality and standards that make UDS Releaser :sparkles:
+Fundamentally, Software Engineering is a communication problem; we write code for each other, not a computer. When working on this project (or any project!) keep your fellow humans in mind and write clearly and concisely. Below are some general guidelines for code quality and standards that make UDS Releaser :sparkles:
 
 - **Write tests that give confidence**: Unless there is a technical blocker, every new feature and bug fix should be tested in the project's automated test suite. Although many of our tests are E2E, unit and integration-style tests are also welcomed. Note that unit tests can live in a `*_test.go` file alongside the source code, and E2E tests live in `src/test/e2e`
 
@@ -46,10 +46,6 @@ Please ensure there is a GitHub issue for your proposed change, this helps the U
 
 To build the app, check out the [tasks](tasks.yaml) with `uds run --list-all`, find the appropriate build target for your system, and run it from the root of the repo (ex. `uds run build-cli-mac-apple`). This will create a binary in the `build` directory that you can use to test your changes (note that this binary is automatically used when running [E2E Tests](#running-tests).
 
-### Pre-Commit Hooks and Linting
-
-In this repo you can optionally use [pre-commit](https://pre-commit.com/) hooks for automated validation and linting, but if not CI will run these checks for you
-
 ### Testing
 
 We strive to test all changes made to UDS Releaser. If you're adding a new feature or fixing a bug, please add tests to cover the new functionality. Unit tests and E2E tests are both welcome, but we leave it up to the contributor to decide which is most appropriate for the change. Below are some guidelines for testing:
@@ -60,7 +56,7 @@ Unit tests reside alongside the source code in a `*_test.go` file. These tests s
 
 #### E2E Tests
 
-E2E tests reside in the `src/test/e2e` directory. They use bundles located in the `src/test/e2e/bundles` which contain Zarf packages from the `src/test/e2e/packages` directory. Feel free to add new bundles and packages where appropriate. It's encouraged to write comments/metadata in any new bundles or packages to explain what they are testing.
+E2E tests reside in the `src/test/e2e` directory. These tests leverage the `releaser.yaml` file in `src/test` and have util functions to work out of `src/test/sandbox`.
 
 #### Assertions
 
