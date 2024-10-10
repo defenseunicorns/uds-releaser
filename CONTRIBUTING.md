@@ -9,7 +9,6 @@ Below are some notes on our core software design philosophies that should help g
 1. [Code Quality and Standards](#code-quality-and-standards)
 1. [How to Contribute](#how-to-contribute)
     - [Building the app](#building-the-app)
-    - [Pre-Commit Hooks and Linting](#pre-commit-hooks-and-linting)
     - [Testing](#testing)
 
 ## Code Quality and Standards
