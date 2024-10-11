@@ -30,3 +30,6 @@ go.work.sum
 # build artifacts
 build/
 uds-releaser
+
+# testing
+src/test/sandbox/

@@ -1,0 +1,43 @@
+name: Run tests
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    paths-ignore:
+      - "**.md"
+      - "**.jpg"
+      - "**.png"
+      - "**.gif"
+      - "**.svg"
+      - "adr/**"
+      - "docs/**"
+      - "CODEOWNERS"
+      - "goreleaser.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
+        with:
+          fetch-depth: 0
+
+      - name: Setup golang
+        uses: ./.github/actions/golang
+
+      - name: Install UDS CLI
+        uses: ./.github/actions/install-uds-cli
+
+      - name: Build UDS Releaser
+        run: uds run build-cli-linux-amd
+        
+      - name: Run e2e tests
+        run: uds run e2e
+        
+      - name: Run unit tests
+        run: uds run unit

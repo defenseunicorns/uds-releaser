@@ -3,6 +3,7 @@ package gitlab
 import (
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/defenseunicorns/uds-releaser/src/types"
@@ -10,8 +11,14 @@ import (
 	gitlab "github.com/xanzy/go-gitlab"
 )
 
+var newGitlabClient = gitlab.NewClient
+
+var openRepo = utils.OpenRepo
+
+var getPackageName = utils.GetPackageName
+
 func TagAndRelease(flavor types.Flavor) error {
-	repo, err := utils.OpenRepo()
+	repo, err := openRepo()
 	if err != nil {
 		return err
 	}
@@ -24,20 +31,10 @@ func TagAndRelease(flavor types.Flavor) error {
 	remoteURL := remote.Config().URLs[0]
 
 	// Parse the GitLab base URL from the remote URL
-	var gitlabBaseURL string
-	if strings.Contains(remoteURL, "gitlab.com") {
-		gitlabBaseURL = "https://gitlab.com/api/v4"
-	} else {
-		// Extract the base URL for self-hosted GitLab instances
-		parts := strings.Split(remoteURL, "/")
-		if len(parts) > 2 {
-			gitlabBaseURL = fmt.Sprintf("https://%s/api/v4", parts[2])
-		} else {
-			return fmt.Errorf("error parsing gitlab base url from remote url: %s", remoteURL)
-		}
+	gitlabBaseURL, err := getGitlabBaseUrl(remoteURL)
+	if err != nil {
+		return err
 	}
-
-	fmt.Printf("GitLab base URL: %s\n", gitlabBaseURL)
 
 	// Get the default branch of the current repository
 	ref, err := repo.Head()
@@ -50,23 +47,18 @@ func TagAndRelease(flavor types.Flavor) error {
 	fmt.Printf("Default branch: %s\n", defaultBranch)
 
 	// Create a new GitLab client
-	gitlabClient, err := gitlab.NewClient(os.Getenv("GITLAB_RELEASE_TOKEN"), gitlab.WithBaseURL(gitlabBaseURL))
+	gitlabClient, err := newGitlabClient(os.Getenv("GITLAB_RELEASE_TOKEN"), gitlab.WithBaseURL(gitlabBaseURL))
 	if err != nil {
 		return err
 	}
 
-	zarfPackageName, err := utils.GetPackageName()
+	zarfPackageName, err := getPackageName()
 	if err != nil {
 		return err
 	}
 
 	// setup the release options
-	releaseOpts := &gitlab.CreateReleaseOptions{
-		Name:        gitlab.Ptr(fmt.Sprintf("%s %s-%s", zarfPackageName, flavor.Version, flavor.Name)),
-		TagName:     gitlab.Ptr(fmt.Sprintf("%s-%s", flavor.Version, flavor.Name)),
-		Description: gitlab.Ptr(fmt.Sprintf("%s %s-%s", zarfPackageName, flavor.Version, flavor.Name)),
-		Ref:         gitlab.Ptr(defaultBranch),
-	}
+	releaseOpts := createReleaseOptions(zarfPackageName, flavor, defaultBranch)
 
 	fmt.Printf("Creating release %s-%s\n", flavor.Version, flavor.Name)
 
@@ -79,4 +71,40 @@ func TagAndRelease(flavor types.Flavor) error {
 	fmt.Printf("Release %s created\n", release.Name)
 
 	return nil
+}
+
+func createReleaseOptions(zarfPackageName string, flavor types.Flavor, branchRef string) *gitlab.CreateReleaseOptions {
+	return &gitlab.CreateReleaseOptions{
+		Name:        gitlab.Ptr(fmt.Sprintf("%s %s-%s", zarfPackageName, flavor.Version, flavor.Name)),
+		TagName:     gitlab.Ptr(fmt.Sprintf("%s-%s", flavor.Version, flavor.Name)),
+		Description: gitlab.Ptr(fmt.Sprintf("%s %s-%s", zarfPackageName, flavor.Version, flavor.Name)),
+		Ref:         gitlab.Ptr(branchRef),
+	}
+}
+
+func getGitlabBaseUrl(remoteURL string) (gitlabBaseURL string, err error) {
+	if strings.Contains(remoteURL, "gitlab.com") {
+		gitlabBaseURL = "https://gitlab.com/api/v4"
+	} else {
+
+		parts := strings.Split(remoteURL, "/")
+		containsAt := strings.Contains(remoteURL, "@")
+		if len(parts) > 2 {
+			gitlabBaseURL = fmt.Sprintf("https://%s/api/v4", parts[2])
+		} else if containsAt {
+			regex := regexp.MustCompile(`@(.+):`)
+
+			matches := regex.FindStringSubmatch(remoteURL)
+			if len(matches) > 1 {
+				gitlabBaseURL = fmt.Sprintf("https://%s/api/v4", matches[1])
+			} else {
+				return "", fmt.Errorf("error parsing gitlab base url from remote url: %s", remoteURL)
+			}
+		} else {
+			return "", fmt.Errorf("error parsing gitlab base url from remote url: %s", remoteURL)
+		}
+	}
+
+	fmt.Printf("GitLab base URL: %s\n", gitlabBaseURL)
+	return gitlabBaseURL, nil
 }

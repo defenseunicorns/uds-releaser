@@ -28,7 +28,7 @@ var showCmd = &cobra.Command{
 	Short: "Show the current version for a given flavor",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		releaserConfig, err := utils.LoadReleaserConfig()
+		releaserConfig, err := utils.LoadReleaserConfig(releaserDir)
 		if err != nil {
 			return err
 		}

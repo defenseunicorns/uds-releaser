@@ -2,15 +2,16 @@ package utils
 
 import (
 	"os"
+	"path/filepath"
 
 	"github.com/defenseunicorns/uds-releaser/src/types"
 	goyaml "github.com/goccy/go-yaml"
 )
 
-func LoadReleaserConfig() (types.ReleaserConfig, error) {
+func LoadReleaserConfig(dir string) (types.ReleaserConfig, error) {
 
 	var config types.ReleaserConfig
-	err := LoadYaml("releaser.yaml", &config)
+	err := LoadYaml(filepath.Join(dir, "/releaser.yaml"), &config)
 	if err != nil {
 		return types.ReleaserConfig{}, err
 	}

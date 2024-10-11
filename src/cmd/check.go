@@ -31,7 +31,7 @@ var checkCmd = &cobra.Command{
 	Short: "Check if release is necessary for given flavor",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		releaserConfig, err := utils.LoadReleaserConfig()
+		releaserConfig, err := utils.LoadReleaserConfig(releaserDir)
 		if err != nil {
 			return err
 		}

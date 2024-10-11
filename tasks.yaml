@@ -14,9 +14,6 @@
 
 includes:
   - test: tasks/tests.yaml
-  - schema: tasks/schema.yaml
-  - docs: tasks/docs.yaml
-  - dev: tasks/dev.yaml
 
 tasks:
   # build tasks
@@ -48,3 +45,15 @@ tasks:
     description: build the CLI for Mac Apple
     actions:
       - cmd: GOOS=darwin GOARCH=arm64 go build -ldflags="${BUILD_ARGS}" -o build/uds-releaser-mac-apple main.go
+
+  - name: e2e
+    description: run all e2e tests
+    actions:
+      - task: build-all
+      - cmd: go test ./... -failfast -v -timeout 5m
+        dir: src/test/e2e
+
+  - name: unit
+    description: run all unit tests
+    actions:
+      - cmd: go test $(go list ./... | grep -v test) -failfast -v -timeout 5m
