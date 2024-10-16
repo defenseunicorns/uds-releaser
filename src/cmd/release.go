@@ -21,6 +21,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var tokenVarName string
+
 // gitlabCmd represents the gitlab command
 var gitlabCmd = &cobra.Command{
 	Use:   "gitlab flavor",
@@ -39,7 +41,7 @@ var gitlabCmd = &cobra.Command{
 
 		rootCmd.SilenceUsage = true
 
-		return gitlab.TagAndRelease(currentFlavor)
+		return gitlab.TagAndRelease(currentFlavor, tokenVarName)
 	},
 }
 
@@ -52,4 +54,5 @@ var releaseCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(releaseCmd)
 	releaseCmd.AddCommand(gitlabCmd)
+	gitlabCmd.Flags().StringVarP(&tokenVarName, "token-var-name", "t", "GITLAB_RELEASE_TOKEN", "Environment variable name for GitLab token")
 }
