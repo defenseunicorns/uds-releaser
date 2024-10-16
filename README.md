@@ -43,6 +43,10 @@ uds-releaser release <flavor>
 
 When running `uds-releaser release gitlab <flavor>` you are expected to have an environment variable set to a GitLab token that has write permissions for your current project. This defaults to `GITLAB_RELEASE_TOKEN` but can be changed with the `--token-var-name` flag.
 
+### GitHub
+
+When running `uds-releaser release github <flavor>` you are expected to have an environment variable set to a GitHub token that has write permissions for your current project. This defaults to `GITHUB_TOKEN` but can be changed with the `--token-var-name` flag.
+
 ## Configuration
 
 UDS-Releaser can be configured using a YAML file named uds-releaser.yaml in your project's root directory.

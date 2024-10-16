@@ -11,14 +11,8 @@ import (
 	gitlab "github.com/xanzy/go-gitlab"
 )
 
-var newGitlabClient = gitlab.NewClient
-
-var openRepo = utils.OpenRepo
-
-var getPackageName = utils.GetPackageName
-
 func TagAndRelease(flavor types.Flavor, tokenVarName string) error {
-	repo, err := openRepo()
+	repo, err := utils.OpenRepo()
 	if err != nil {
 		return err
 	}
@@ -47,12 +41,12 @@ func TagAndRelease(flavor types.Flavor, tokenVarName string) error {
 	fmt.Printf("Default branch: %s\n", defaultBranch)
 
 	// Create a new GitLab client
-	gitlabClient, err := newGitlabClient(os.Getenv(tokenVarName), gitlab.WithBaseURL(gitlabBaseURL))
+	gitlabClient, err := gitlab.NewClient(os.Getenv(tokenVarName), gitlab.WithBaseURL(gitlabBaseURL))
 	if err != nil {
 		return err
 	}
 
-	zarfPackageName, err := getPackageName()
+	zarfPackageName, err := utils.GetPackageName()
 	if err != nil {
 		return err
 	}

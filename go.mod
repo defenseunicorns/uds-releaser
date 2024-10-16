@@ -6,6 +6,7 @@ require (
 	github.com/defenseunicorns/uds-cli v0.16.0
 	github.com/go-git/go-git/v5 v5.12.0
 	github.com/goccy/go-yaml v1.12.0
+	github.com/google/go-github/v66 v66.0.0
 	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.9.0
 	github.com/xanzy/go-gitlab v0.109.0
