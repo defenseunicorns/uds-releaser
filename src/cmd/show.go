@@ -22,6 +22,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var showVersionOnly bool
+
 // showCmd represents the show command
 var showCmd = &cobra.Command{
 	Use:   "show flavor",
@@ -40,7 +42,11 @@ var showCmd = &cobra.Command{
 
 		rootCmd.SilenceUsage = true
 
-		fmt.Printf("%s-%s\n", currentFlavor.Version, currentFlavor.Name)
+		if showVersionOnly {
+			fmt.Printf("%s\n", currentFlavor.Version)
+		} else {
+			fmt.Printf("%s-%s\n", currentFlavor.Version, currentFlavor.Name)
+		}
 
 		return nil
 	},
@@ -48,4 +54,5 @@ var showCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(showCmd)
+	showCmd.Flags().BoolVarP(&showVersionOnly, "version-only", "v", false, "Show only the version without flavor appended")
 }

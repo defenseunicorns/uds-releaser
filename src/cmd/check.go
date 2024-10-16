@@ -23,7 +23,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var boolOutput bool
+var checkBoolOutput bool
 
 // checkCmd represents the check command
 var checkCmd = &cobra.Command{
@@ -50,14 +50,14 @@ var checkCmd = &cobra.Command{
 			return err
 		}
 		if tagExists {
-			if boolOutput {
+			if checkBoolOutput {
 				fmt.Println("false")
 			} else {
 				fmt.Printf("Version %s is already tagged\n", versionAndFlavor)
 				return errors.New("no release necessary")
 			}
 		} else {
-			if boolOutput {
+			if checkBoolOutput {
 				fmt.Println("true")
 			} else {
 				fmt.Printf("Version %s is not tagged\n", versionAndFlavor)
@@ -68,6 +68,6 @@ var checkCmd = &cobra.Command{
 }
 
 func init() {
-	checkCmd.Flags().BoolVarP(&boolOutput, "boolean", "b", false, "Switch the output string to a true/false based on if a release is necessary. True if a release is necessary, false if not.")
+	checkCmd.Flags().BoolVarP(&checkBoolOutput, "boolean", "b", false, "Switch the output string to a true/false based on if a release is necessary. True if a release is necessary, false if not.")
 	rootCmd.AddCommand(checkCmd)
 }
