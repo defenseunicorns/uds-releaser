@@ -17,7 +17,7 @@ var openRepo = utils.OpenRepo
 
 var getPackageName = utils.GetPackageName
 
-func TagAndRelease(flavor types.Flavor) error {
+func TagAndRelease(flavor types.Flavor, tokenVarName string) error {
 	repo, err := openRepo()
 	if err != nil {
 		return err
@@ -47,7 +47,7 @@ func TagAndRelease(flavor types.Flavor) error {
 	fmt.Printf("Default branch: %s\n", defaultBranch)
 
 	// Create a new GitLab client
-	gitlabClient, err := newGitlabClient(os.Getenv("GITLAB_RELEASE_TOKEN"), gitlab.WithBaseURL(gitlabBaseURL))
+	gitlabClient, err := newGitlabClient(os.Getenv(tokenVarName), gitlab.WithBaseURL(gitlabBaseURL))
 	if err != nil {
 		return err
 	}
