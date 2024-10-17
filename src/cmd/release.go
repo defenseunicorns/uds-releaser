@@ -16,8 +16,9 @@ limitations under the License.
 package cmd
 
 import (
-	"github.com/defenseunicorns/uds-releaser/src/gitlab"
-	"github.com/defenseunicorns/uds-releaser/src/utils"
+	"github.com/defenseunicorns/uds-releaser/src/platforms"
+	"github.com/defenseunicorns/uds-releaser/src/platforms/github"
+	"github.com/defenseunicorns/uds-releaser/src/platforms/gitlab"
 	"github.com/spf13/cobra"
 )
 
@@ -29,19 +30,17 @@ var gitlabCmd = &cobra.Command{
 	Short: "Create a tag and release on GitLab based on flavor",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		releaserConfig, err := utils.LoadReleaserConfig(releaserDir)
-		if err != nil {
-			return err
-		}
+		return platforms.LoadAndTag(releaserDir, args[0], tokenVarName, gitlab.Platform{})
+	},
+}
 
-		currentFlavor, err := utils.GetFlavorConfig(args[0], releaserConfig)
-		if err != nil {
-			return err
-		}
-
-		rootCmd.SilenceUsage = true
-
-		return gitlab.TagAndRelease(currentFlavor, tokenVarName)
+// githubCmd represents the github command
+var githubCmd = &cobra.Command{
+	Use:   "github flavor",
+	Short: "Create a tag and release on GitHub based on flavor",
+	Args:  cobra.ExactArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return platforms.LoadAndTag(releaserDir, args[0], tokenVarName, github.Platform{})
 	},
 }
 
@@ -54,5 +53,7 @@ var releaseCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(releaseCmd)
 	releaseCmd.AddCommand(gitlabCmd)
+	releaseCmd.AddCommand(githubCmd)
 	gitlabCmd.Flags().StringVarP(&tokenVarName, "token-var-name", "t", "GITLAB_RELEASE_TOKEN", "Environment variable name for GitLab token")
+	githubCmd.Flags().StringVarP(&tokenVarName, "token-var-name", "t", "GITHUB_TOKEN", "Environment variable name for GitHub token")
 }

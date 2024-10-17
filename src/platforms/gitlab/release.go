@@ -11,24 +11,13 @@ import (
 	gitlab "github.com/xanzy/go-gitlab"
 )
 
-var newGitlabClient = gitlab.NewClient
+type Platform struct{}
 
-var openRepo = utils.OpenRepo
-
-var getPackageName = utils.GetPackageName
-
-func TagAndRelease(flavor types.Flavor, tokenVarName string) error {
-	repo, err := openRepo()
+func (Platform) TagAndRelease(flavor types.Flavor, tokenVarName string) error {
+	remoteURL, defaultBranch, _, err := utils.GetRepoInfo()
 	if err != nil {
 		return err
 	}
-
-	remote, err := repo.Remote("origin")
-	if err != nil {
-		return err
-	}
-
-	remoteURL := remote.Config().URLs[0]
 
 	// Parse the GitLab base URL from the remote URL
 	gitlabBaseURL, err := getGitlabBaseUrl(remoteURL)
@@ -36,23 +25,15 @@ func TagAndRelease(flavor types.Flavor, tokenVarName string) error {
 		return err
 	}
 
-	// Get the default branch of the current repository
-	ref, err := repo.Head()
-	if err != nil {
-		return err
-	}
-
-	defaultBranch := ref.Name().Short()
-
 	fmt.Printf("Default branch: %s\n", defaultBranch)
 
 	// Create a new GitLab client
-	gitlabClient, err := newGitlabClient(os.Getenv(tokenVarName), gitlab.WithBaseURL(gitlabBaseURL))
+	gitlabClient, err := gitlab.NewClient(os.Getenv(tokenVarName), gitlab.WithBaseURL(gitlabBaseURL))
 	if err != nil {
 		return err
 	}
 
-	zarfPackageName, err := getPackageName()
+	zarfPackageName, err := utils.GetPackageName()
 	if err != nil {
 		return err
 	}
