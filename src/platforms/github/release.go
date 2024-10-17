@@ -12,7 +12,9 @@ import (
 	github "github.com/google/go-github/v66/github"
 )
 
-func TagAndRelease(flavor types.Flavor, tokenVarName string) error {
+type Platform struct{}
+
+func (Platform) TagAndRelease(flavor types.Flavor, tokenVarName string) error {
 	remoteURL, _, ref, err := utils.GetRepoInfo()
 	if err != nil {
 		return err

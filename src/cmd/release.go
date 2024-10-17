@@ -16,9 +16,9 @@ limitations under the License.
 package cmd
 
 import (
-	"github.com/defenseunicorns/uds-releaser/src/github"
-	"github.com/defenseunicorns/uds-releaser/src/gitlab"
-	"github.com/defenseunicorns/uds-releaser/src/utils"
+	"github.com/defenseunicorns/uds-releaser/src/platforms"
+	"github.com/defenseunicorns/uds-releaser/src/platforms/github"
+	"github.com/defenseunicorns/uds-releaser/src/platforms/gitlab"
 	"github.com/spf13/cobra"
 )
 
@@ -30,19 +30,7 @@ var gitlabCmd = &cobra.Command{
 	Short: "Create a tag and release on GitLab based on flavor",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		releaserConfig, err := utils.LoadReleaserConfig(releaserDir)
-		if err != nil {
-			return err
-		}
-
-		currentFlavor, err := utils.GetFlavorConfig(args[0], releaserConfig)
-		if err != nil {
-			return err
-		}
-
-		rootCmd.SilenceUsage = true
-
-		return gitlab.TagAndRelease(currentFlavor, tokenVarName)
+		return platforms.LoadAndTag(releaserDir, args[0], tokenVarName, gitlab.Platform{})
 	},
 }
 
@@ -52,19 +40,7 @@ var githubCmd = &cobra.Command{
 	Short: "Create a tag and release on GitHub based on flavor",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		releaserConfig, err := utils.LoadReleaserConfig(releaserDir)
-		if err != nil {
-			return err
-		}
-
-		currentFlavor, err := utils.GetFlavorConfig(args[0], releaserConfig)
-		if err != nil {
-			return err
-		}
-
-		rootCmd.SilenceUsage = true
-
-		return github.TagAndRelease(currentFlavor, tokenVarName)
+		return platforms.LoadAndTag(releaserDir, args[0], tokenVarName, github.Platform{})
 	},
 }
 

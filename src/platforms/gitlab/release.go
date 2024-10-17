@@ -11,7 +11,9 @@ import (
 	gitlab "github.com/xanzy/go-gitlab"
 )
 
-func TagAndRelease(flavor types.Flavor, tokenVarName string) error {
+type Platform struct{}
+
+func (Platform) TagAndRelease(flavor types.Flavor, tokenVarName string) error {
 	remoteURL, defaultBranch, _, err := utils.GetRepoInfo()
 	if err != nil {
 		return err
