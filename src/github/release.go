@@ -13,18 +13,7 @@ import (
 )
 
 func TagAndRelease(flavor types.Flavor, tokenVarName string) error {
-	repo, err := utils.OpenRepo()
-	if err != nil {
-		return err
-	}
-
-	remote, err := repo.Remote("origin")
-	if err != nil {
-		return err
-	}
-
-	// Get the default branch of the current repository
-	ref, err := repo.Head()
+	remoteURL, _, ref, err := utils.GetRepoInfo()
 	if err != nil {
 		return err
 	}
@@ -34,10 +23,6 @@ func TagAndRelease(flavor types.Flavor, tokenVarName string) error {
 
 	// Set the authentication token
 	githubClient = githubClient.WithAuthToken(os.Getenv(tokenVarName))
-
-	// Get the repository owner and name
-
-	remoteURL := remote.Config().URLs[0]
 
 	owner, repoName, err := getGithubOwnerAndRepo(remoteURL)
 	if err != nil {

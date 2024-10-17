@@ -29,3 +29,25 @@ func DoesTagExist(tag string) (bool, error) {
 func OpenRepo() (*git.Repository, error) {
 	return git.PlainOpen(".")
 }
+
+func GetRepoInfo() (remoteURL string, defaultBranch string, ref *plumbing.Reference, err error) {
+	repo, err := OpenRepo()
+	if err != nil {
+		return "", "", ref,  err
+	}
+
+	remote, err := repo.Remote("origin")
+	if err != nil {
+		return "", "", ref, err
+	}
+
+	remoteURL = remote.Config().URLs[0]
+
+	ref, err = repo.Head()
+	if err != nil {
+		return "", "", ref, err
+	}
+
+	defaultBranch = ref.Name().Short()
+	return remoteURL, defaultBranch, ref, nil
+}

@@ -12,31 +12,16 @@ import (
 )
 
 func TagAndRelease(flavor types.Flavor, tokenVarName string) error {
-	repo, err := utils.OpenRepo()
+	remoteURL, defaultBranch, _, err := utils.GetRepoInfo()
 	if err != nil {
 		return err
 	}
-
-	remote, err := repo.Remote("origin")
-	if err != nil {
-		return err
-	}
-
-	remoteURL := remote.Config().URLs[0]
 
 	// Parse the GitLab base URL from the remote URL
 	gitlabBaseURL, err := getGitlabBaseUrl(remoteURL)
 	if err != nil {
 		return err
 	}
-
-	// Get the default branch of the current repository
-	ref, err := repo.Head()
-	if err != nil {
-		return err
-	}
-
-	defaultBranch := ref.Name().Short()
 
 	fmt.Printf("Default branch: %s\n", defaultBranch)
 
