@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func testCreateGitHubTag(t *testing.T) {
+func TestCreateGitHubTag(t *testing.T) {
 	// Create a new tag
 	tagName := "v1.0.0-uds.0-unicorn"
 	releaseName := "testing-package v1.0.0-uds.0-unicorn"
@@ -19,7 +19,7 @@ func testCreateGitHubTag(t *testing.T) {
 	assert.Equal(t, hash, *tag.Object.SHA)
 }
 
-func testgetGithubOwnerAndRepo(t *testing.T) {
+func TestGetGithubOwnerAndRepo(t *testing.T) {
 	// Get the owner and repo from a remote URL
 	httpsRemoteURL := "https://github.com/defenseunicorns/uds-releaser.git"
 	sshRemoteURL := "git@github.com:defenseunicorns/uds-releaser.git"
