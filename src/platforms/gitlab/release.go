@@ -14,7 +14,7 @@ import (
 type Platform struct{}
 
 func (Platform) TagAndRelease(flavor types.Flavor, tokenVarName string) error {
-	remoteURL, defaultBranch, _, err := utils.GetRepoInfo()
+	remoteURL, defaultBranch, err := utils.GetRepoInfo()
 	if err != nil {
 		return err
 	}

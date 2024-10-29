@@ -15,7 +15,7 @@ import (
 type Platform struct{}
 
 func (Platform) TagAndRelease(flavor types.Flavor, tokenVarName string) error {
-	remoteURL, _, ref, err := utils.GetRepoInfo()
+	remoteURL, _, err := utils.GetRepoInfo()
 	if err != nil {
 		return err
 	}
@@ -39,26 +39,6 @@ func (Platform) TagAndRelease(flavor types.Flavor, tokenVarName string) error {
 
 	tagName := fmt.Sprintf("%s-%s", flavor.Version, flavor.Name)
 	releaseName := fmt.Sprintf("%s %s", zarfPackageName, tagName)
-
-	tag := createGitHubTag(tagName, releaseName, ref.Hash().String())
-
-	createdTag, _, err := githubClient.Git.CreateTag(context.Background(), owner, repoName, tag)
-	if err != nil {
-		return err
-	}
-
-	// Create a reference for the tag
-	tagRef := &github.Reference{
-		Ref: github.String("refs/tags/" + tagName),
-		Object: &github.GitObject{
-			SHA: createdTag.SHA,
-		},
-	}
-
-	_, _, err = githubClient.Git.CreateRef(context.Background(), owner, repoName, tagRef)
-	if err != nil {
-		return err
-	}
 
 	// Create the release
 	release := &github.RepositoryRelease{
