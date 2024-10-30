@@ -2,6 +2,7 @@ package gitlab
 
 import (
 	"fmt"
+	"net/url"
 	"os"
 	"regexp"
 	"strings"
@@ -19,13 +20,19 @@ func (Platform) TagAndRelease(flavor types.Flavor, tokenVarName string) error {
 		return err
 	}
 
+	fmt.Println("Remote URL: ", remoteURL)
+
 	// Parse the GitLab base URL from the remote URL
 	gitlabBaseURL, err := getGitlabBaseUrl(remoteURL)
 	if err != nil {
 		return err
 	}
 
+	fmt.Println("Base URL: ", gitlabBaseURL)
+
 	fmt.Printf("Default branch: %s\n", defaultBranch)
+
+	fmt.Println("token var name: ", tokenVarName)
 
 	// Create a new GitLab client
 	gitlabClient, err := gitlab.NewClient(os.Getenv(tokenVarName), gitlab.WithBaseURL(gitlabBaseURL))
@@ -46,6 +53,7 @@ func (Platform) TagAndRelease(flavor types.Flavor, tokenVarName string) error {
 	// Create the release
 	release, _, err := gitlabClient.Releases.CreateRelease(os.Getenv("CI_PROJECT_ID"), releaseOpts)
 	if err != nil {
+		fmt.Println("Error creating release: ", err)
 		return err
 	}
 
@@ -65,27 +73,18 @@ func createReleaseOptions(zarfPackageName string, flavor types.Flavor, branchRef
 
 func getGitlabBaseUrl(remoteURL string) (gitlabBaseURL string, err error) {
 	if strings.Contains(remoteURL, "gitlab.com") {
-		gitlabBaseURL = "https://gitlab.com/api/v4"
-	} else {
-
-		parts := strings.Split(remoteURL, "/")
-		containsAt := strings.Contains(remoteURL, "@")
-		if len(parts) > 2 {
-			gitlabBaseURL = fmt.Sprintf("https://%s/api/v4", parts[2])
-		} else if containsAt {
-			regex := regexp.MustCompile(`@(.+):`)
-
-			matches := regex.FindStringSubmatch(remoteURL)
-			if len(matches) > 1 {
-				gitlabBaseURL = fmt.Sprintf("https://%s/api/v4", matches[1])
-			} else {
-				return "", fmt.Errorf("error parsing gitlab base url from remote url: %s", remoteURL)
-			}
-		} else {
-			return "", fmt.Errorf("error parsing gitlab base url from remote url: %s", remoteURL)
-		}
+		return "https://gitlab.com/api/v4", nil
 	}
 
-	fmt.Printf("GitLab base URL: %s\n", gitlabBaseURL)
-	return gitlabBaseURL, nil
+	parsedURL, err := url.Parse(remoteURL)
+	if err != nil {
+		regex := regexp.MustCompile(`@([^:/]+)`)
+		matches := regex.FindStringSubmatch(remoteURL)
+		if len(matches) > 1 {
+			return fmt.Sprintf("https://%s/api/v4", matches[1]), nil
+		}
+		return "", fmt.Errorf("error parsing GitLab base URL from remote URL: %s", remoteURL)
+	}
+
+	return fmt.Sprintf("%s://%s/api/v4", parsedURL.Scheme, parsedURL.Host), nil
 }

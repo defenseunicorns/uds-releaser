@@ -22,7 +22,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var tokenVarName string
+var gitlabTokenVarName string
+var githubTokenVarName string
 
 // gitlabCmd represents the gitlab command
 var gitlabCmd = &cobra.Command{
@@ -30,7 +31,7 @@ var gitlabCmd = &cobra.Command{
 	Short: "Create a tag and release on GitLab based on flavor",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return platforms.LoadAndTag(releaserDir, args[0], tokenVarName, gitlab.Platform{})
+		return platforms.LoadAndTag(releaserDir, args[0], gitlabTokenVarName, gitlab.Platform{})
 	},
 }
 
@@ -40,7 +41,7 @@ var githubCmd = &cobra.Command{
 	Short: "Create a tag and release on GitHub based on flavor",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return platforms.LoadAndTag(releaserDir, args[0], tokenVarName, github.Platform{})
+		return platforms.LoadAndTag(releaserDir, args[0], githubTokenVarName, github.Platform{})
 	},
 }
 
@@ -54,6 +55,6 @@ func init() {
 	rootCmd.AddCommand(releaseCmd)
 	releaseCmd.AddCommand(gitlabCmd)
 	releaseCmd.AddCommand(githubCmd)
-	gitlabCmd.Flags().StringVarP(&tokenVarName, "token-var-name", "t", "GITLAB_RELEASE_TOKEN", "Environment variable name for GitLab token")
-	githubCmd.Flags().StringVarP(&tokenVarName, "token-var-name", "t", "GITHUB_TOKEN", "Environment variable name for GitHub token")
+	gitlabCmd.Flags().StringVarP(&gitlabTokenVarName, "token-var-name", "t", "GITLAB_RELEASE_TOKEN", "Environment variable name for GitLab token")
+	githubCmd.Flags().StringVarP(&githubTokenVarName, "token-var-name", "t", "GITHUB_TOKEN", "Environment variable name for GitHub token")
 }
