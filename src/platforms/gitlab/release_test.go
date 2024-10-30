@@ -47,6 +47,16 @@ func TestGetGitlabBaseUrl(t *testing.T) {
 			remoteURL: "https://gitlab.fake.com/defenseunicorns/uds-releaser.git",
 			expected: "https://gitlab.fake.com/api/v4",
 		},
+		{
+			name:     "https-with-token",
+			remoteURL: "https://test:token@gitlab.com/defenseunicorns/uds-releaser.git",
+			expected: "https://gitlab.com/api/v4",
+		},
+		{
+			name:     "https-self-hosted-with-token",
+			remoteURL: "https://test:token@gitlab.fake.com/defenseunicorns/uds-releaser.git",
+			expected: "https://gitlab.fake.com/api/v4",
+		},
 	}
 
 	for _, tt := range tests {

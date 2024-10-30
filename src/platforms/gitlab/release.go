@@ -77,7 +77,8 @@ func getGitlabBaseUrl(remoteURL string) (gitlabBaseURL string, err error) {
 
 		parts := strings.Split(remoteURL, "/")
 		containsAt := strings.Contains(remoteURL, "@")
-		if containsAt {
+		containsHttps := strings.Contains(remoteURL, "https")
+		if containsAt && containsHttps {
 			regex := regexp.MustCompile(`:.+@(.+?)\/`)
 
 			matches := regex.FindStringSubmatch(remoteURL)
@@ -88,6 +89,15 @@ func getGitlabBaseUrl(remoteURL string) (gitlabBaseURL string, err error) {
 			}
 		} else if len(parts) > 2 {
 			gitlabBaseURL = fmt.Sprintf("https://%s/api/v4", parts[2])
+		} else if containsAt {
+			regex := regexp.MustCompile(`@(.+):`)
+
+			matches := regex.FindStringSubmatch(remoteURL)
+			if len(matches) > 1 {
+				gitlabBaseURL = fmt.Sprintf("https://%s/api/v4", matches[1])
+			} else {
+				return "", fmt.Errorf("error parsing gitlab base url from remote url: %s", remoteURL)
+			}
 		} else {
 			return "", fmt.Errorf("error parsing gitlab base url from remote url: %s", remoteURL)
 		}
