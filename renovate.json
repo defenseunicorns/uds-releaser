@@ -10,6 +10,13 @@
   "schedule": ["after 7am and before 9am every weekday"],
   "packageRules": [
     {
+      "groupName": "UDS Releaser Dependencies",
+      "labels": ["app-deps"],
+      "commitMessageTopic": "app-deps",
+      "matchDatasources": ["go"],
+      "postUpdateOptions": ["gomodTidy"]
+    },
+    {
       "groupName": "UDS Releaser Support Dependencies",
       "labels": ["support-deps"],
       "commitMessageTopic": "support-deps",
