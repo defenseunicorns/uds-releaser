@@ -9,7 +9,7 @@ require (
 	github.com/google/go-github/v66 v66.0.0
 	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.9.0
-	github.com/xanzy/go-gitlab v0.109.0
+	github.com/xanzy/go-gitlab v0.112.0
 	github.com/zarf-dev/zarf v0.39.0
 )
 

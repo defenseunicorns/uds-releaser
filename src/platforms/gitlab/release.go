@@ -19,13 +19,19 @@ func (Platform) TagAndRelease(flavor types.Flavor, tokenVarName string) error {
 		return err
 	}
 
+	fmt.Println("Remote URL: ", remoteURL)
+
 	// Parse the GitLab base URL from the remote URL
 	gitlabBaseURL, err := getGitlabBaseUrl(remoteURL)
 	if err != nil {
 		return err
 	}
 
+	fmt.Println("Base URL: ", gitlabBaseURL)
+
 	fmt.Printf("Default branch: %s\n", defaultBranch)
+
+	fmt.Println("token var name: ", tokenVarName)
 
 	// Create a new GitLab client
 	gitlabClient, err := gitlab.NewClient(os.Getenv(tokenVarName), gitlab.WithBaseURL(gitlabBaseURL))
@@ -46,6 +52,7 @@ func (Platform) TagAndRelease(flavor types.Flavor, tokenVarName string) error {
 	// Create the release
 	release, _, err := gitlabClient.Releases.CreateRelease(os.Getenv("CI_PROJECT_ID"), releaseOpts)
 	if err != nil {
+		fmt.Println("Error creating release: ", err)
 		return err
 	}
 
@@ -70,10 +77,8 @@ func getGitlabBaseUrl(remoteURL string) (gitlabBaseURL string, err error) {
 
 		parts := strings.Split(remoteURL, "/")
 		containsAt := strings.Contains(remoteURL, "@")
-		if len(parts) > 2 {
-			gitlabBaseURL = fmt.Sprintf("https://%s/api/v4", parts[2])
-		} else if containsAt {
-			regex := regexp.MustCompile(`@(.+):`)
+		if containsAt {
+			regex := regexp.MustCompile(`:.+@(.+?)\/`)
 
 			matches := regex.FindStringSubmatch(remoteURL)
 			if len(matches) > 1 {
@@ -81,6 +86,8 @@ func getGitlabBaseUrl(remoteURL string) (gitlabBaseURL string, err error) {
 			} else {
 				return "", fmt.Errorf("error parsing gitlab base url from remote url: %s", remoteURL)
 			}
+		} else if len(parts) > 2 {
+			gitlabBaseURL = fmt.Sprintf("https://%s/api/v4", parts[2])
 		} else {
 			return "", fmt.Errorf("error parsing gitlab base url from remote url: %s", remoteURL)
 		}
