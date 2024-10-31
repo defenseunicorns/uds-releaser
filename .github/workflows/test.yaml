@@ -1,3 +1,6 @@
+# Copyright 2024 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
 name: Run tests
 
 permissions:
@@ -35,9 +38,9 @@ jobs:
 
       - name: Build UDS Releaser
         run: uds run build-cli-linux-amd
-        
+
       - name: Run e2e tests
         run: uds run e2e
-        
+
       - name: Run unit tests
         run: uds run unit

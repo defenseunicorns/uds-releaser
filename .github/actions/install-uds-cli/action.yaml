@@ -1,3 +1,6 @@
+# Copyright 2024 Defense Unicorns
+# SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Defense-Unicorns-Commercial
+
 name: Install UDS CLI
 description: installs uds-cli
 
@@ -11,11 +14,11 @@ inputs:
 runs:
   using: composite
   steps:
-  - name: Set UDS Releaser Arch
-    id: setUdsCliArch
-    shell: bash
-    run: INPUT=${{ runner.arch == 'X64' && 'amd64' || runner.arch }}; echo "ARCH=${INPUT,,}" >> "$GITHUB_OUTPUT"
+    - name: Set UDS Releaser Arch
+      id: setUdsCliArch
+      shell: bash
+      run: INPUT=${{ runner.arch == 'X64' && 'amd64' || runner.arch }}; echo "ARCH=${INPUT,,}" >> "$GITHUB_OUTPUT"
 
-  - name: Install UDS CLI
-    shell: bash
-    run: curl -o /usr/local/bin/uds -L https://github.com/defenseunicorns/uds-cli/releases/download/v${{ inputs.udsCliVersion }}/uds-cli_v${{ inputs.udsCliVersion }}_Linux_${{steps.setUdsCliArch.outputs.ARCH}} && chmod +x /usr/local/bin/uds
+    - name: Install UDS CLI
+      shell: bash
+      run: curl -o /usr/local/bin/uds -L https://github.com/defenseunicorns/uds-cli/releases/download/v${{ inputs.udsCliVersion }}/uds-cli_v${{ inputs.udsCliVersion }}_Linux_${{steps.setUdsCliArch.outputs.ARCH}} && chmod +x /usr/local/bin/uds
