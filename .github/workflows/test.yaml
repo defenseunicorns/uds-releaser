@@ -38,9 +38,9 @@ jobs:
 
       - name: Build UDS Releaser
         run: uds run build-cli-linux-amd
-        
+
       - name: Run e2e tests
         run: uds run e2e
-        
+
       - name: Run unit tests
         run: uds run unit
