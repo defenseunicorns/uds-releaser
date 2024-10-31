@@ -41,10 +41,18 @@ jobs:
         run: |
           uds run lint:deps --no-progress
 
-      - name: Lint the YAML
+      - name: Lint YAML
         run: |
           uds run lint:yaml --no-progress
 
-      - name: Lint the License
+      - name: Lint Scripts
+        run: |
+          uds run lint:shell --no-progress
+
+      - name: Lint Tasks
+        run: |
+          uds run lint:tasks --no-progress
+
+      - name: Lint License
         run: |
           uds run lint:license --no-progress
