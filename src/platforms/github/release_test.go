@@ -50,6 +50,13 @@ func TestGetGithubOwnerAndRepo(t *testing.T) {
 			expectError:   false,
 		},
 		{
+			name:          "HTTPSRemoteURLNoGit",
+			remoteURL:     "https://github.com/defenseunicorns/uds-releaser",
+			expectedOwner: "defenseunicorns",
+			expectedRepo:  "uds-releaser",
+			expectError:   false,
+		},
+		{
 			name:          "HTTPSRemoteURLWithToken",
 			remoteURL:     "https://test:token@github.com/defenseunicorns/uds-releaser.git",
 			expectedOwner: "defenseunicorns",
