@@ -77,7 +77,9 @@ func createGitHubTag(tagName string, releaseName string, hash string) *github.Ta
 
 func getGithubOwnerAndRepo(remoteURL string) (string, string, error) {
 	// Parse the GitHub owner and repository name from the remote URL
-	ownerRepoRegex := regexp.MustCompile(`github\.com[:/](.*)\/(.*?)(?:\.git|$)`)
+	// https://regex101.com/r/zdpJ9Q/1 Extract the owner and repository name from the remote URL using capture groups
+	//   only match remoteURLs that contain github.com
+	ownerRepoRegex := regexp.MustCompile(`github\.com[:\/](.*)\/(.*?)(?:\.git|$)`)
 	matches := ownerRepoRegex.FindStringSubmatch(remoteURL)
 	if len(matches) != 3 {
 		return "", "", fmt.Errorf("could not parse GitHub owner and repository name from remote URL: %s", remoteURL)
