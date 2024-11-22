@@ -16,7 +16,7 @@ type Platform interface {
 }
 
 func LoadAndTag(releaserDir, flavor, tokenVarName string, platform Platform) error {
-	err := verifyEnvVar(tokenVarName)
+	err := VerifyEnvVar(tokenVarName)
 	if err != nil {
 		return err
 	}
@@ -34,7 +34,7 @@ func LoadAndTag(releaserDir, flavor, tokenVarName string, platform Platform) err
 	return platform.TagAndRelease(currentFlavor, tokenVarName)
 }
 
-func verifyEnvVar(varName string) error {
+func VerifyEnvVar(varName string) error {
 	if value, exists := os.LookupEnv(varName); !exists || value == "" {
 		return fmt.Errorf("%s is unset or empty", varName)
 	}
