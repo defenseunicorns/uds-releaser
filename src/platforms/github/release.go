@@ -6,10 +6,12 @@ package github
 import (
 	"context"
 	"fmt"
+	"io"
 	"os"
 	"regexp"
 	"time"
 
+	"github.com/defenseunicorns/uds-releaser/src/platforms"
 	"github.com/defenseunicorns/uds-releaser/src/types"
 	"github.com/defenseunicorns/uds-releaser/src/utils"
 	github "github.com/google/go-github/v66/github"
@@ -51,11 +53,19 @@ func (Platform) TagAndRelease(flavor types.Flavor, tokenVarName string) error {
 		GenerateReleaseNotes: github.Bool(true),
 	}
 
-	_, _, err = githubClient.Repositories.CreateRelease(context.Background(), owner, repoName, release)
-	if err != nil {
+	fmt.Printf("Creating release %s-%s\n", flavor.Version, flavor.Name)
+
+	_, response, err := githubClient.Repositories.CreateRelease(context.Background(), owner, repoName, release)
+	bodyBytes, _ := io.ReadAll(response.Body)
+	if platforms.ReleaseExists(422, response.StatusCode, string(bodyBytes), `"code":"already_exists"`) {
+		fmt.Printf("Release with tag %s already exists\n", tagName)
+		return nil
+	} else if err != nil {
 		return err
+	} else {
+		fmt.Printf("Release %s %s-%s created\n", zarfPackageName, flavor.Version, flavor.Name)
+		return nil
 	}
-	return nil
 }
 
 func createGitHubTag(tagName string, releaseName string, hash string) *github.Tag {

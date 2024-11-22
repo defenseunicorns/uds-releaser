@@ -10,6 +10,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/defenseunicorns/uds-releaser/src/platforms"
 	"github.com/defenseunicorns/uds-releaser/src/types"
 	"github.com/defenseunicorns/uds-releaser/src/utils"
 	gitlab "github.com/xanzy/go-gitlab"
@@ -23,19 +24,11 @@ func (Platform) TagAndRelease(flavor types.Flavor, tokenVarName string) error {
 		return err
 	}
 
-	fmt.Println("Remote URL: ", remoteURL)
-
 	// Parse the GitLab base URL from the remote URL
 	gitlabBaseURL, err := getGitlabBaseUrl(remoteURL)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println("Base URL: ", gitlabBaseURL)
-
-	fmt.Printf("Default branch: %s\n", defaultBranch)
-
-	fmt.Println("token var name: ", tokenVarName)
 
 	// Create a new GitLab client
 	gitlabClient, err := gitlab.NewClient(os.Getenv(tokenVarName), gitlab.WithBaseURL(gitlabBaseURL))
@@ -54,15 +47,18 @@ func (Platform) TagAndRelease(flavor types.Flavor, tokenVarName string) error {
 	fmt.Printf("Creating release %s-%s\n", flavor.Version, flavor.Name)
 
 	// Create the release
-	release, _, err := gitlabClient.Releases.CreateRelease(os.Getenv("CI_PROJECT_ID"), releaseOpts)
-	if err != nil {
+	_, response, err := gitlabClient.Releases.CreateRelease(os.Getenv("CI_PROJECT_ID"), releaseOpts)
+
+	if platforms.ReleaseExists(409, response.StatusCode, err.Error(), `message: Release already exists`) {
+		fmt.Printf("Release with tag %s-%s already exists\n", flavor.Version, flavor.Name)
+		return nil
+	} else if err != nil {
 		fmt.Println("Error creating release: ", err)
 		return err
+	} else {
+		fmt.Printf("Release %s %s-%s created\n", zarfPackageName, flavor.Version, flavor.Name)
+		return nil
 	}
-
-	fmt.Printf("Release %s created\n", release.Name)
-
-	return nil
 }
 
 func createReleaseOptions(zarfPackageName string, flavor types.Flavor, branchRef string) *gitlab.CreateReleaseOptions {

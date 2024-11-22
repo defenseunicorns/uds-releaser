@@ -4,6 +4,8 @@
 package platforms
 
 import (
+	"regexp"
+
 	"github.com/defenseunicorns/uds-releaser/src/types"
 	"github.com/defenseunicorns/uds-releaser/src/utils"
 )
@@ -24,4 +26,8 @@ func LoadAndTag(releaserDir, flavor, tokenVarName string, platform Platform) err
 	}
 
 	return platform.TagAndRelease(currentFlavor, tokenVarName)
+}
+
+func ReleaseExists(expectedStatusCode, receivedStatusCode int, response string, pattern string) bool {
+	return receivedStatusCode == expectedStatusCode && regexp.MustCompile(pattern).MatchString(response)
 }
