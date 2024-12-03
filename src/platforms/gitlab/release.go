@@ -10,6 +10,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/defenseunicorns/uds-releaser/src/platforms"
 	"github.com/defenseunicorns/uds-releaser/src/types"
 	"github.com/defenseunicorns/uds-releaser/src/utils"
 	gitlab "github.com/xanzy/go-gitlab"
@@ -52,6 +53,11 @@ func (Platform) TagAndRelease(flavor types.Flavor, tokenVarName string) error {
 	releaseOpts := createReleaseOptions(zarfPackageName, flavor, defaultBranch)
 
 	fmt.Printf("Creating release %s-%s\n", flavor.Version, flavor.Name)
+
+	err = platforms.VerifyEnvVar("CI_PROJECT_ID")
+	if err != nil {
+		return err
+	}
 
 	// Create the release
 	release, _, err := gitlabClient.Releases.CreateRelease(os.Getenv("CI_PROJECT_ID"), releaseOpts)
