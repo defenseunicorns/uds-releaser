@@ -54,16 +54,11 @@ func (Platform) TagAndRelease(flavor types.Flavor, tokenVarName string) error {
 	// Create the release
 	_, response, err := gitlabClient.Releases.CreateRelease(os.Getenv("CI_PROJECT_ID"), releaseOpts)
 
-	if platforms.ReleaseExists(409, response.StatusCode, err.Error(), `message: Release already exists`) {
-		fmt.Printf("Release with tag %s-%s already exists\n", flavor.Version, flavor.Name)
-		return nil
-	} else if err != nil {
-		fmt.Println("Error creating release: ", err)
+	err = platforms.ReleaseExists(409, response.StatusCode, err, `message: Release already exists`, zarfPackageName, flavor)
+	if err != nil {
 		return err
-	} else {
-		fmt.Printf("Release %s %s-%s created\n", zarfPackageName, flavor.Version, flavor.Name)
-		return nil
 	}
+	return nil
 }
 
 func createReleaseOptions(zarfPackageName string, flavor types.Flavor, branchRef string) *gitlab.CreateReleaseOptions {

@@ -6,7 +6,6 @@ package github
 import (
 	"context"
 	"fmt"
-	"io"
 	"os"
 	"regexp"
 	"time"
@@ -56,16 +55,12 @@ func (Platform) TagAndRelease(flavor types.Flavor, tokenVarName string) error {
 	fmt.Printf("Creating release %s-%s\n", flavor.Version, flavor.Name)
 
 	_, response, err := githubClient.Repositories.CreateRelease(context.Background(), owner, repoName, release)
-	bodyBytes, _ := io.ReadAll(response.Body)
-	if platforms.ReleaseExists(422, response.StatusCode, string(bodyBytes), `"code":"already_exists"`) {
-		fmt.Printf("Release with tag %s already exists\n", tagName)
-		return nil
-	} else if err != nil {
+
+	err = platforms.ReleaseExists(422, response.StatusCode, err, `already_exists`, zarfPackageName, flavor)
+	if err != nil {
 		return err
-	} else {
-		fmt.Printf("Release %s %s-%s created\n", zarfPackageName, flavor.Version, flavor.Name)
-		return nil
 	}
+	return nil
 }
 
 func createGitHubTag(tagName string, releaseName string, hash string) *github.Tag {
