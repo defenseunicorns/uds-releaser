@@ -46,6 +46,11 @@ func (Platform) TagAndRelease(flavor types.Flavor, tokenVarName string) error {
 
 	fmt.Printf("Creating release %s-%s\n", flavor.Version, flavor.Name)
 
+	err = platforms.VerifyEnvVar("CI_PROJECT_ID")
+	if err != nil {
+		return err
+	}
+
 	// Create the release
 	_, response, err := gitlabClient.Releases.CreateRelease(os.Getenv("CI_PROJECT_ID"), releaseOpts)
 
