@@ -24,19 +24,11 @@ func (Platform) TagAndRelease(flavor types.Flavor, tokenVarName string) error {
 		return err
 	}
 
-	fmt.Println("Remote URL: ", remoteURL)
-
 	// Parse the GitLab base URL from the remote URL
 	gitlabBaseURL, err := getGitlabBaseUrl(remoteURL)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println("Base URL: ", gitlabBaseURL)
-
-	fmt.Printf("Default branch: %s\n", defaultBranch)
-
-	fmt.Println("token var name: ", tokenVarName)
 
 	// Create a new GitLab client
 	gitlabClient, err := gitlab.NewClient(os.Getenv(tokenVarName), gitlab.WithBaseURL(gitlabBaseURL))
@@ -60,14 +52,12 @@ func (Platform) TagAndRelease(flavor types.Flavor, tokenVarName string) error {
 	}
 
 	// Create the release
-	release, _, err := gitlabClient.Releases.CreateRelease(os.Getenv("CI_PROJECT_ID"), releaseOpts)
+	_, response, err := gitlabClient.Releases.CreateRelease(os.Getenv("CI_PROJECT_ID"), releaseOpts)
+
+	err = platforms.ReleaseExists(409, response.StatusCode, err, `message: Release already exists`, zarfPackageName, flavor)
 	if err != nil {
-		fmt.Println("Error creating release: ", err)
 		return err
 	}
-
-	fmt.Printf("Release %s created\n", release.Name)
-
 	return nil
 }
 

@@ -10,6 +10,7 @@ import (
 	"regexp"
 	"time"
 
+	"github.com/defenseunicorns/uds-releaser/src/platforms"
 	"github.com/defenseunicorns/uds-releaser/src/types"
 	"github.com/defenseunicorns/uds-releaser/src/utils"
 	github "github.com/google/go-github/v66/github"
@@ -51,7 +52,11 @@ func (Platform) TagAndRelease(flavor types.Flavor, tokenVarName string) error {
 		GenerateReleaseNotes: github.Bool(true),
 	}
 
-	_, _, err = githubClient.Repositories.CreateRelease(context.Background(), owner, repoName, release)
+	fmt.Printf("Creating release %s-%s\n", flavor.Version, flavor.Name)
+
+	_, response, err := githubClient.Repositories.CreateRelease(context.Background(), owner, repoName, release)
+
+	err = platforms.ReleaseExists(422, response.StatusCode, err, `already_exists`, zarfPackageName, flavor)
 	if err != nil {
 		return err
 	}
