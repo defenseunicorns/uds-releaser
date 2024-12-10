@@ -8,32 +8,32 @@ import (
 	"os"
 	"testing"
 
-	"github.com/defenseunicorns/uds-releaser/src/types"
+	"github.com/defenseunicorns/uds-pk/src/types"
 )
 
 func TestVerifyEnvVar(t *testing.T) {
 	tests := []struct {
-		varName       string
-		setVar        bool
-		varContents   string
+		varName     string
+		setVar      bool
+		varContents string
 		expectError bool
 	}{
 		{
-			varName:       "TEST_VAR",
-			setVar:        true,
-			varContents:   "test",
+			varName:     "TEST_VAR",
+			setVar:      true,
+			varContents: "test",
 			expectError: false,
 		},
 		{
-			varName:       "TEST_VAR",
-			setVar:        false,
-			varContents:   "",
+			varName:     "TEST_VAR",
+			setVar:      false,
+			varContents: "",
 			expectError: true,
 		},
 		{
-			varName:       "TEST_VAR",
-			setVar:        true,
-			varContents:   "",
+			varName:     "TEST_VAR",
+			setVar:      true,
+			varContents: "",
 			expectError: true,
 		},
 	}
@@ -78,7 +78,7 @@ func TestReleaseExists(t *testing.T) {
 			pattern:            "already_exists",
 			packageName:        "test",
 			flavor:             types.Flavor{Name: "test", Version: "1.0"},
-			expectError: false,
+			expectError:        false,
 		},
 		{
 			expectedStatusCode: 409,
@@ -87,7 +87,7 @@ func TestReleaseExists(t *testing.T) {
 			pattern:            "already_exists",
 			packageName:        "test",
 			flavor:             types.Flavor{Name: "test", Version: "1.0"},
-			expectError: false,
+			expectError:        false,
 		},
 		{
 			expectedStatusCode: 409,
@@ -96,7 +96,7 @@ func TestReleaseExists(t *testing.T) {
 			pattern:            "already_exists",
 			packageName:        "test",
 			flavor:             types.Flavor{Name: "test", Version: "1.0"},
-			expectError: true,
+			expectError:        true,
 		},
 		{
 			expectedStatusCode: 409,
@@ -105,7 +105,7 @@ func TestReleaseExists(t *testing.T) {
 			pattern:            "already_exists",
 			packageName:        "test",
 			flavor:             types.Flavor{Name: "test", Version: "1.0"},
-			expectError: true,
+			expectError:        true,
 		},
 	}
 

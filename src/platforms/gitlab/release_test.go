@@ -6,7 +6,7 @@ package gitlab
 import (
 	"testing"
 
-	"github.com/defenseunicorns/uds-releaser/src/types"
+	"github.com/defenseunicorns/uds-pk/src/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -26,39 +26,39 @@ func TestCreateReleaseOptions(t *testing.T) {
 
 func TestGetGitlabBaseUrl(t *testing.T) {
 	tests := []struct {
-		name     string
+		name      string
 		remoteURL string
-		expected string
+		expected  string
 	}{
 		{
-			name:     "ssh",
-			remoteURL: "git@gitlab.com:defenseunicorns/uds-releaser.git",
-			expected: "https://gitlab.com/api/v4",
+			name:      "ssh",
+			remoteURL: "git@gitlab.com:defenseunicorns/uds-pk.git",
+			expected:  "https://gitlab.com/api/v4",
 		},
 		{
-			name:     "https",
-			remoteURL: "https://gitlab.com/defenseunicorns/uds-releaser.git",
-			expected: "https://gitlab.com/api/v4",
+			name:      "https",
+			remoteURL: "https://gitlab.com/defenseunicorns/uds-pk.git",
+			expected:  "https://gitlab.com/api/v4",
 		},
 		{
-			name:     "ssh-self-hosted",
-			remoteURL: "git@gitlab.fake.com:defenseunicorns/uds-releaser.git",
-			expected: "https://gitlab.fake.com/api/v4",
+			name:      "ssh-self-hosted",
+			remoteURL: "git@gitlab.fake.com:defenseunicorns/uds-pk.git",
+			expected:  "https://gitlab.fake.com/api/v4",
 		},
 		{
-			name:     "https-self-hosted",
-			remoteURL: "https://gitlab.fake.com/defenseunicorns/uds-releaser.git",
-			expected: "https://gitlab.fake.com/api/v4",
+			name:      "https-self-hosted",
+			remoteURL: "https://gitlab.fake.com/defenseunicorns/uds-pk.git",
+			expected:  "https://gitlab.fake.com/api/v4",
 		},
 		{
-			name:     "https-with-token",
-			remoteURL: "https://test:token@gitlab.com/defenseunicorns/uds-releaser.git",
-			expected: "https://gitlab.com/api/v4",
+			name:      "https-with-token",
+			remoteURL: "https://test:token@gitlab.com/defenseunicorns/uds-pk.git",
+			expected:  "https://gitlab.com/api/v4",
 		},
 		{
-			name:     "https-self-hosted-with-token",
-			remoteURL: "https://test:token@gitlab.fake.com/defenseunicorns/uds-releaser.git",
-			expected: "https://gitlab.fake.com/api/v4",
+			name:      "https-self-hosted-with-token",
+			remoteURL: "https://test:token@gitlab.fake.com/defenseunicorns/uds-pk.git",
+			expected:  "https://gitlab.fake.com/api/v4",
 		},
 	}
 

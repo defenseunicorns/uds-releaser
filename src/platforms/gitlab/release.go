@@ -10,9 +10,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/defenseunicorns/uds-releaser/src/platforms"
-	"github.com/defenseunicorns/uds-releaser/src/types"
-	"github.com/defenseunicorns/uds-releaser/src/utils"
+	"github.com/defenseunicorns/uds-pk/src/platforms"
+	"github.com/defenseunicorns/uds-pk/src/types"
+	"github.com/defenseunicorns/uds-pk/src/utils"
 	gitlab "github.com/xanzy/go-gitlab"
 )
 

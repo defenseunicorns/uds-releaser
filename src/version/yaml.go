@@ -7,8 +7,8 @@ import (
 	"fmt"
 
 	uds "github.com/defenseunicorns/uds-cli/src/types"
-	"github.com/defenseunicorns/uds-releaser/src/types"
-	"github.com/defenseunicorns/uds-releaser/src/utils"
+	"github.com/defenseunicorns/uds-pk/src/types"
+	"github.com/defenseunicorns/uds-pk/src/utils"
 	zarf "github.com/zarf-dev/zarf/src/api/v1alpha1"
 )
 

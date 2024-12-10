@@ -11,6 +11,6 @@ type Flavor struct {
 	PublishBundleUrl  string `yaml:"publishBundleUrl,omitempty"`
 }
 
-type ReleaserConfig struct {
+type ReleaseConfig struct {
 	Flavors []Flavor `yaml:"flavors"`
 }

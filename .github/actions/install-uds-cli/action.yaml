@@ -14,7 +14,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Set UDS Releaser Arch
+    - name: Set UDS Package Kit Arch
       id: setUdsCliArch
       shell: bash
       run: INPUT=${{ runner.arch == 'X64' && 'amd64' || runner.arch }}; echo "ARCH=${INPUT,,}" >> "$GITHUB_OUTPUT"

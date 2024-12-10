@@ -36,7 +36,7 @@ jobs:
       - name: Install UDS CLI
         uses: ./.github/actions/install-uds-cli
 
-      - name: Build UDS Releaser
+      - name: Build UDS Package Kit
         run: uds run build-cli-linux-amd
 
       - name: Run e2e tests

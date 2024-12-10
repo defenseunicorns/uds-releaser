@@ -6,8 +6,8 @@ package test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
 	uds "github.com/defenseunicorns/uds-cli/src/types"
+	"github.com/stretchr/testify/require"
 	zarf "github.com/zarf-dev/zarf/src/api/v1alpha1"
 )
 
@@ -20,7 +20,7 @@ func TestUpdateYamlCommand(t *testing.T) {
 	// Create a dummy uds-bundle yaml with devel as version
 	e2e.CreateUDSBundleYaml(t, "src/test/sandbox/bundle")
 
-	stdout, stderr, err := e2e.UDSReleaserDir("src/test/sandbox", "update-yaml", "base", "-d", "../")
+	stdout, stderr, err := e2e.UDSPKDir("src/test/sandbox", "release", "update-yaml", "base", "-d", "../")
 	require.NoError(t, err, stdout, stderr)
 
 	// Check that the zarf.yaml was updated

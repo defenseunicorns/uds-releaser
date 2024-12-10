@@ -10,13 +10,13 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/defenseunicorns/uds-releaser/src/test"
+	"github.com/defenseunicorns/uds-pk/src/test"
 
 	"github.com/defenseunicorns/uds-cli/src/config"
 )
 
 var (
-	e2e test.UDSReleaserE2ETest //nolint:gochecknoglobals
+	e2e test.UDSPKE2ETest //nolint:gochecknoglobals
 )
 
 // TestMain lets us customize the test run. See https://medium.com/goingogo/why-use-testmain-for-testing-in-go-dafb52b406bc.
@@ -46,15 +46,15 @@ func doAllTheThings(m *testing.M) (int, error) {
 
 	// Set up constants in the global variable that all the tests are able to access
 	e2e.Arch = config.GetArch()
-	e2e.UDSReleaserBinPath, err = filepath.Abs(path.Join("build", test.GetCLIName()))
+	e2e.UDSPKBinPath, err = filepath.Abs(path.Join("build", test.GetCLIName()))
 	if err != nil {
 		return 1, fmt.Errorf("failed to get absolute path: %w", err)
 	}
 
 	// Validate that the UDS binary exists. If it doesn't that means the dev hasn't built it
-	_, err = os.Stat(e2e.UDSReleaserBinPath)
+	_, err = os.Stat(e2e.UDSPKBinPath)
 	if err != nil {
-		return 1, fmt.Errorf("zarf binary %s not found", e2e.UDSReleaserBinPath)
+		return 1, fmt.Errorf("zarf binary %s not found", e2e.UDSPKBinPath)
 	}
 
 	// Run the tests, with the cluster cleanup being deferred to the end of the function call
@@ -62,9 +62,9 @@ func doAllTheThings(m *testing.M) (int, error) {
 
 	isCi := os.Getenv("CI") == "true"
 	if isCi {
-		fmt.Println("::notice::uds-releaser Command Log")
+		fmt.Println("::notice::uds-pk Command Log")
 		// Print out the command history
-		fmt.Println("::group::uds-releaser Command Log")
+		fmt.Println("::group::uds-pk Command Log")
 		for _, cmd := range e2e.CommandLog {
 			fmt.Println(cmd) // todo: it's a UDS cmd but this links up with pterm in Zarf
 		}
