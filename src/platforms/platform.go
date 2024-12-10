@@ -9,26 +9,26 @@ import (
 
 	"regexp"
 
-	"github.com/defenseunicorns/uds-releaser/src/types"
-	"github.com/defenseunicorns/uds-releaser/src/utils"
+	"github.com/defenseunicorns/uds-pk/src/types"
+	"github.com/defenseunicorns/uds-pk/src/utils"
 )
 
 type Platform interface {
 	TagAndRelease(flavor types.Flavor, tokenVarName string) error
 }
 
-func LoadAndTag(releaserDir, flavor, tokenVarName string, platform Platform) error {
+func LoadAndTag(releaseDir, flavor, tokenVarName string, platform Platform) error {
 	err := VerifyEnvVar(tokenVarName)
 	if err != nil {
 		return err
 	}
 
-	releaserConfig, err := utils.LoadReleaserConfig(releaserDir)
+	releaseConfig, err := utils.LoadReleaseConfig(releaseDir)
 	if err != nil {
 		return err
 	}
 
-	currentFlavor, err := utils.GetFlavorConfig(flavor, releaserConfig)
+	currentFlavor, err := utils.GetFlavorConfig(flavor, releaseConfig)
 	if err != nil {
 		return err
 	}

@@ -18,22 +18,22 @@ tasks:
   - name: build-cli-linux-amd
     description: build the CLI for Linux AMD64
     actions:
-      - cmd: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="${BUILD_ARGS}" -o build/uds-releaser main.go
+      - cmd: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="${BUILD_ARGS}" -o build/uds-pk main.go
 
   - name: build-cli-linux-arm
     description: build the CLI for Linux ARM64
     actions:
-      - cmd: CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -ldflags="${BUILD_ARGS}" -o build/uds-releaser-arm main.go
+      - cmd: CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -ldflags="${BUILD_ARGS}" -o build/uds-pk-arm main.go
 
   - name: build-cli-mac-intel
     description: build the CLI for Mac Intel
     actions:
-      - cmd: GOOS=darwin GOARCH=amd64 go build -ldflags="${BUILD_ARGS}" -o build/uds-releaser-mac-intel main.go
+      - cmd: GOOS=darwin GOARCH=amd64 go build -ldflags="${BUILD_ARGS}" -o build/uds-pk-mac-intel main.go
 
   - name: build-cli-mac-apple
     description: build the CLI for Mac Apple
     actions:
-      - cmd: GOOS=darwin GOARCH=arm64 go build -ldflags="${BUILD_ARGS}" -o build/uds-releaser-mac-apple main.go
+      - cmd: GOOS=darwin GOARCH=arm64 go build -ldflags="${BUILD_ARGS}" -o build/uds-pk-mac-apple main.go
 
   - name: e2e
     description: run all e2e tests

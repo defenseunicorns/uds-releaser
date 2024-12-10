@@ -7,16 +7,16 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/defenseunicorns/uds-releaser/src/types"
+	"github.com/defenseunicorns/uds-pk/src/types"
 	goyaml "github.com/goccy/go-yaml"
 )
 
-func LoadReleaserConfig(dir string) (types.ReleaserConfig, error) {
+func LoadReleaseConfig(dir string) (types.ReleaseConfig, error) {
 
-	var config types.ReleaserConfig
+	var config types.ReleaseConfig
 	err := LoadYaml(filepath.Join(dir, "/releaser.yaml"), &config)
 	if err != nil {
-		return types.ReleaserConfig{}, err
+		return types.ReleaseConfig{}, err
 	}
 
 	return config, nil

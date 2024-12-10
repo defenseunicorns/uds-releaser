@@ -29,7 +29,7 @@ go.work.sum
 
 # build artifacts
 build/
-uds-releaser
+uds-pk
 
 # testing
 src/test/sandbox/

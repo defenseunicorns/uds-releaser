@@ -14,52 +14,52 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/require"
-	"github.com/zarf-dev/zarf/src/pkg/utils/exec"
 	uds "github.com/defenseunicorns/uds-cli/src/types"
-	zarf "github.com/zarf-dev/zarf/src/api/v1alpha1"
 	goyaml "github.com/goccy/go-yaml"
+	"github.com/stretchr/testify/require"
+	zarf "github.com/zarf-dev/zarf/src/api/v1alpha1"
+	"github.com/zarf-dev/zarf/src/pkg/utils/exec"
 )
 
-// UDSReleaserE2ETest Struct holding common fields most of the tests will utilize.
-type UDSReleaserE2ETest struct {
-	UDSReleaserBinPath        string
-	Arch              string
-	RunClusterTests   bool
-	CommandLog        []string
+// UDSPKE2ETest Struct holding common fields most of the tests will utilize.
+type UDSPKE2ETest struct {
+	UDSPKBinPath    string
+	Arch            string
+	RunClusterTests bool
+	CommandLog      []string
 }
 
 // GetCLIName looks at the OS and CPU architecture to determine which binary needs to be run.
 func GetCLIName() string {
 	var binaryName string
 	if runtime.GOOS == "linux" {
-		binaryName = "uds-releaser"
+		binaryName = "uds-pk"
 	} else if runtime.GOOS == "darwin" {
 		if runtime.GOARCH == "arm64" {
-			binaryName = "uds-releaser-mac-apple"
+			binaryName = "uds-pk-mac-apple"
 		} else {
-			binaryName = "uds-releaser-mac-intel"
+			binaryName = "uds-pk-mac-intel"
 		}
 	}
 	return binaryName
 }
 
-// UDSReleaser executes a uds-releaser command.
-func (e2e *UDSReleaserE2ETest) UDSReleaser(args ...string) (string, string, error) {
+// UDSPK executes a uds-pk command.
+func (e2e *UDSPKE2ETest) UDSPK(args ...string) (string, string, error) {
 	e2e.CommandLog = append(e2e.CommandLog, strings.Join(args, " "))
-	return exec.CmdWithContext(context.TODO(), exec.PrintCfg(), e2e.UDSReleaserBinPath, args...)
+	return exec.CmdWithContext(context.TODO(), exec.PrintCfg(), e2e.UDSPKBinPath, args...)
 }
 
-// UDSReleaserDir executes a uds-releaser command in a specific directory.
+// UDSPKDir executes a uds-pk command in a specific directory.
 // relativeBinDir is the relative path to the base repo folder from the directory.
-func (e2e *UDSReleaserE2ETest) UDSReleaserDir(dir string, args ...string) (string, string, error) {
+func (e2e *UDSPKE2ETest) UDSPKDir(dir string, args ...string) (string, string, error) {
 	e2e.CommandLog = append(e2e.CommandLog, strings.Join(args, " "))
 	config := exec.PrintCfg()
 	config.Dir = dir
-	return exec.CmdWithContext(context.TODO(), config, e2e.UDSReleaserBinPath, args...)
+	return exec.CmdWithContext(context.TODO(), config, e2e.UDSPKBinPath, args...)
 }
 
-func (e2e *UDSReleaserE2ETest) CreateSandboxDir(t *testing.T, subfolders ...string) {
+func (e2e *UDSPKE2ETest) CreateSandboxDir(t *testing.T, subfolders ...string) {
 	// Create a sandbox directory for our tests
 	sandboxDir := "src/test/sandbox"
 	err := os.Mkdir(sandboxDir, 0o755)
@@ -71,14 +71,14 @@ func (e2e *UDSReleaserE2ETest) CreateSandboxDir(t *testing.T, subfolders ...stri
 	require.NoError(t, err)
 }
 
-func (e2e *UDSReleaserE2ETest) CleanupSandboxDir(t *testing.T) {
+func (e2e *UDSPKE2ETest) CleanupSandboxDir(t *testing.T) {
 	// Cleanup the sandbox directory
 	sandboxDir := "src/test/sandbox"
 	err := os.RemoveAll(sandboxDir)
 	require.NoError(t, err)
 }
 
-func (e2e *UDSReleaserE2ETest) CreateZarfYaml(t *testing.T, dir string) {
+func (e2e *UDSPKE2ETest) CreateZarfYaml(t *testing.T, dir string) {
 	// Create a zarf.yaml file for our tests
 	var zarfPackage zarf.ZarfPackage
 	zarfPackage.Metadata.Name = "testing-package"
@@ -91,7 +91,7 @@ func (e2e *UDSReleaserE2ETest) CreateZarfYaml(t *testing.T, dir string) {
 	require.NoError(t, err)
 }
 
-func (e2e *UDSReleaserE2ETest) CreateUDSBundleYaml(t *testing.T, dir string) {
+func (e2e *UDSPKE2ETest) CreateUDSBundleYaml(t *testing.T, dir string) {
 	// Create a uds-bundle.yaml file for our tests
 	var udsBundle uds.UDSBundle
 	udsBundle.Metadata.Name = "testing-bundle"
@@ -109,7 +109,7 @@ func (e2e *UDSReleaserE2ETest) CreateUDSBundleYaml(t *testing.T, dir string) {
 	require.NoError(t, err)
 }
 
-func (e2e *UDSReleaserE2ETest) LoadYaml(path string, destVar interface{}) error {
+func (e2e *UDSPKE2ETest) LoadYaml(path string, destVar interface{}) error {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return err
@@ -119,7 +119,7 @@ func (e2e *UDSReleaserE2ETest) LoadYaml(path string, destVar interface{}) error 
 }
 
 // CleanFiles removes files and directories that have been created during the test.
-func (e2e *UDSReleaserE2ETest) CleanFiles(files ...string) {
+func (e2e *UDSPKE2ETest) CleanFiles(files ...string) {
 	for _, file := range files {
 		_ = os.RemoveAll(file)
 	}
@@ -127,7 +127,7 @@ func (e2e *UDSReleaserE2ETest) CleanFiles(files ...string) {
 
 // GetMismatchedArch determines what architecture our tests are running on,
 // and returns the opposite architecture.
-func (e2e *UDSReleaserE2ETest) GetMismatchedArch() string {
+func (e2e *UDSPKE2ETest) GetMismatchedArch() string {
 	switch e2e.Arch {
 	case "arm64":
 		return "amd64"
@@ -137,9 +137,9 @@ func (e2e *UDSReleaserE2ETest) GetMismatchedArch() string {
 }
 
 // GetUdsVersion returns the current build version
-func (e2e *UDSReleaserE2ETest) GetUdsVersion(t *testing.T) string {
+func (e2e *UDSPKE2ETest) GetUdsVersion(t *testing.T) string {
 	// Get the version of the CLI
-	stdOut, stdErr, err := e2e.UDSReleaser("version")
+	stdOut, stdErr, err := e2e.UDSPK("version")
 	require.NoError(t, err, stdOut, stdErr)
 	return strings.Trim(stdOut, "\n")
 }
@@ -177,7 +177,7 @@ func downloadFile(url string, outputDir string) error {
 }
 
 // GetGitRevision returns the current git revision
-func (e2e *UDSReleaserE2ETest) GetGitRevision() (string, error) {
+func (e2e *UDSPKE2ETest) GetGitRevision() (string, error) {
 	out, _, err := exec.Cmd("git", "rev-parse", "--short", "HEAD")
 	if err != nil {
 		return "", err

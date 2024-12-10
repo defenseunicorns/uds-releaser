@@ -1,4 +1,4 @@
-module github.com/defenseunicorns/uds-releaser
+module github.com/defenseunicorns/uds-pk
 
 go 1.22.8
 

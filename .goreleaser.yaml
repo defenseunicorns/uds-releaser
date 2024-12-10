@@ -19,7 +19,7 @@ builds:
     goarch:
       - amd64
       - arm64
-    binary: uds-releaser
+    binary: uds-pk
 
 # Save the built artifacts as binaries (instead of wrapping them in a tarball)
 archives:
@@ -48,7 +48,7 @@ changelog:
 release:
   github:
     owner: defenseunicorns
-    name: uds-releaser
+    name: uds-pk
   prerelease: auto
   mode: append
   draft: false

@@ -6,10 +6,10 @@ package utils
 import (
 	"errors"
 
-	"github.com/defenseunicorns/uds-releaser/src/types"
+	"github.com/defenseunicorns/uds-pk/src/types"
 )
 
-func GetFlavorConfig(flavor string, config types.ReleaserConfig) (types.Flavor, error) {
+func GetFlavorConfig(flavor string, config types.ReleaseConfig) (types.Flavor, error) {
 	for _, f := range config.Flavors {
 		if f.Name == flavor {
 			return f, nil

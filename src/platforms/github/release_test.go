@@ -11,16 +11,16 @@ import (
 
 func TestCreateGitHubTag(t *testing.T) {
 	tests := []struct {
-		name            string
-		tagName         string
-		releaseName     string
-		hash            string
+		name        string
+		tagName     string
+		releaseName string
+		hash        string
 	}{
 		{
-			name:            "ValidTag",
-			tagName:         "v1.0.0-uds.0-unicorn",
-			releaseName:     "testing-package v1.0.0-uds.0-unicorn",
-			hash:            "1234567890",
+			name:        "ValidTag",
+			tagName:     "v1.0.0-uds.0-unicorn",
+			releaseName: "testing-package v1.0.0-uds.0-unicorn",
+			hash:        "1234567890",
 		},
 	}
 
@@ -44,35 +44,35 @@ func TestGetGithubOwnerAndRepo(t *testing.T) {
 	}{
 		{
 			name:          "HTTPSRemoteURL",
-			remoteURL:     "https://github.com/defenseunicorns/uds-releaser.git",
+			remoteURL:     "https://github.com/defenseunicorns/uds-pk.git",
 			expectedOwner: "defenseunicorns",
-			expectedRepo:  "uds-releaser",
+			expectedRepo:  "uds-pk",
 			expectError:   false,
 		},
 		{
 			name:          "HTTPSRemoteURLNoGit",
-			remoteURL:     "https://github.com/defenseunicorns/uds-releaser",
+			remoteURL:     "https://github.com/defenseunicorns/uds-pk",
 			expectedOwner: "defenseunicorns",
-			expectedRepo:  "uds-releaser",
+			expectedRepo:  "uds-pk",
 			expectError:   false,
 		},
 		{
 			name:          "HTTPSRemoteURLWithToken",
-			remoteURL:     "https://test:token@github.com/defenseunicorns/uds-releaser.git",
+			remoteURL:     "https://test:token@github.com/defenseunicorns/uds-pk.git",
 			expectedOwner: "defenseunicorns",
-			expectedRepo:  "uds-releaser",
+			expectedRepo:  "uds-pk",
 			expectError:   false,
 		},
 		{
 			name:          "SSHRemoteURL",
-			remoteURL:     "git@github.com:defenseunicorns/uds-releaser.git",
+			remoteURL:     "git@github.com:defenseunicorns/uds-pk.git",
 			expectedOwner: "defenseunicorns",
-			expectedRepo:  "uds-releaser",
+			expectedRepo:  "uds-pk",
 			expectError:   false,
 		},
 		{
 			name:          "GitlabRemoteURL",
-			remoteURL:     "https://gitlab.com/defenseunicorns/uds-releaser.git",
+			remoteURL:     "https://gitlab.com/defenseunicorns/uds-pk.git",
 			expectedOwner: "",
 			expectedRepo:  "",
 			expectError:   true,
