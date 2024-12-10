@@ -15,7 +15,7 @@ func TestCheckCommand(t *testing.T) {
 
 	require.Equal(t, "Version 1.0.0-uds.0-base is not tagged\n", stdout)
 
-	stdout, stderr, err = e2e.UDSPK("check", "dummy", "-d", "src/test")
+	stdout, stderr, err = e2e.UDSPK("release", "check", "dummy", "-d", "src/test")
 	require.Error(t, err, stdout, stderr)
 
 	require.Equal(t, "Version testing-dummy is already tagged\n", stdout)
