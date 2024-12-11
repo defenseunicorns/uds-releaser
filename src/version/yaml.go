@@ -4,12 +4,11 @@
 package version
 
 import (
-	"fmt"
-
 	uds "github.com/defenseunicorns/uds-cli/src/types"
 	"github.com/defenseunicorns/uds-pk/src/types"
 	"github.com/defenseunicorns/uds-pk/src/utils"
 	zarf "github.com/zarf-dev/zarf/src/api/v1alpha1"
+	"github.com/zarf-dev/zarf/src/pkg/message"
 )
 
 func UpdateYamls(flavor types.Flavor) error {
@@ -35,7 +34,7 @@ func updateZarfYaml(flavor types.Flavor) (packageName string, err error) {
 		return zarfPackage.Metadata.Name, err
 	}
 
-	fmt.Printf("Updated zarf.yaml with version %s\n", flavor.Version)
+	message.Infof("Updated zarf.yaml with version %s\n", flavor.Version)
 
 	return zarfPackage.Metadata.Name, nil
 }
@@ -61,6 +60,6 @@ func updateBundleYaml(flavor types.Flavor, packageName string) error {
 		return err
 	}
 
-	fmt.Printf("Updated uds-bundle.yaml with version %s\n", flavor.Version)
+	message.Infof("Updated uds-bundle.yaml with version %s\n", flavor.Version)
 	return nil
 }
