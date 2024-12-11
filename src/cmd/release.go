@@ -13,6 +13,7 @@ import (
 	"github.com/defenseunicorns/uds-pk/src/utils"
 	"github.com/defenseunicorns/uds-pk/src/version"
 	"github.com/spf13/cobra"
+	"github.com/zarf-dev/zarf/src/pkg/message"
 )
 
 var releaseDir string
@@ -49,14 +50,14 @@ var checkCmd = &cobra.Command{
 			if checkBoolOutput {
 				fmt.Println("false")
 			} else {
-				fmt.Printf("Version %s is already tagged\n", versionAndFlavor)
+				message.Warnf("Version %s is already tagged\n", versionAndFlavor)
 				return errors.New("no release necessary")
 			}
 		} else {
 			if checkBoolOutput {
 				fmt.Println("true")
 			} else {
-				fmt.Printf("Version %s is not tagged\n", versionAndFlavor)
+				message.Warnf("Version %s is not tagged\n", versionAndFlavor)
 			}
 		}
 		return nil
