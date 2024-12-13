@@ -47,7 +47,7 @@ func GenerateSchemas(baseDir string) error {
 	return nil
 }
 
-func CheckSchemas(baseDir string) error {
+func ValidateSchemas(baseDir string) error {
 	valuesFiles, err := findFiles(baseDir, "values.yaml")
 	if err != nil {
 		return err
@@ -104,10 +104,7 @@ func buildSchemaForValuesFile(valuesFile string) (map[string]interface{}, error)
 	}
 
 	// Generate schema
-	baseSchema, err := generateBaseSchema(jsonData)
-	if err != nil {
-		return nil, fmt.Errorf("failed to generate schema for %s: %w", valuesFile, err)
-	}
+	baseSchema := generateBaseSchema(jsonData) //TODO(ewyles) -- removed error return from this because it was always nil
 
 	// Add custom schema
 	customSchemas, err := LoadCustomSchemas()
@@ -186,12 +183,9 @@ func yamlToJSON(filePath string) (map[string]interface{}, error) {
 	return yamlData, nil
 }
 
-func generateBaseSchema(data map[string]interface{}) (map[string]interface{}, error) {
-	return map[string]interface{}{
-		"type":                 "object",
-		"properties":           mapToSchema(data),
-		"additionalProperties": false,
-	}, nil
+// TODO(ewyles) -- refactored this a bit for reuse and made it a little easier to read (I think?)
+func generateBaseSchema(data map[string]interface{}) map[string]interface{} {
+	return objectSchema(mapToSchema(data))
 }
 
 func mapToSchema(data map[string]interface{}) map[string]interface{} {
@@ -199,43 +193,48 @@ func mapToSchema(data map[string]interface{}) map[string]interface{} {
 	for key, value := range data {
 		switch v := value.(type) {
 		case map[string]interface{}:
-			properties[key] = map[string]interface{}{
-				"type":                 "object",
-				"properties":           mapToSchema(v),
-				"additionalProperties": false,
-			}
+			properties[key] = objectSchema(mapToSchema(v))
 		case []interface{}:
-			items := map[string]interface{}{}
-			if len(v) > 0 {
-				items = mapToSchema(map[string]interface{}{"item": v[0]})["item"].(map[string]interface{})
-			}
-			properties[key] = map[string]interface{}{
-				"type":  "array",
-				"items": items,
-			}
+			properties[key] = arraySchema(v)
 		case string:
-			properties[key] = map[string]interface{}{
-				"type": "string",
-			}
+			properties[key] = typeSchema("string")
 		case float64, int, uint64, int64:
-			properties[key] = map[string]interface{}{
-				"type": "number",
-			}
+			properties[key] = typeSchema("number")
 		case bool:
-			properties[key] = map[string]interface{}{
-				"type": "boolean",
-			}
+			properties[key] = typeSchema("boolean")
 		case nil:
-			properties[key] = map[string]interface{}{
-				"type": "null",
-			}
+			properties[key] = typeSchema("null")
 		default:
-			properties[key] = map[string]interface{}{
-				"type": fmt.Sprintf("%T", value),
-			}
+			properties[key] = typeSchema(fmt.Sprintf("%T", value))
 		}
 	}
 	return properties
+}
+
+func objectSchema(properties map[string]interface{}) map[string]interface{} {
+	return map[string]interface{}{
+		"type":                 "object",
+		"properties":           properties,
+		"additionalProperties": false,
+	}
+}
+
+func arraySchema(arr []interface{}) map[string]interface{} {
+	items := map[string]interface{}{}
+	if len(arr) > 0 {
+		items = mapToSchema(map[string]interface{}{"item": arr[0]})["item"].(map[string]interface{})
+	}
+
+	return map[string]interface{}{
+		"type":  "array",
+		"items": items,
+	}
+}
+
+func typeSchema(typeName string) map[string]interface{} {
+	return map[string]interface{}{
+		"type": typeName,
+	}
 }
 
 func LoadCustomSchemas() (map[string]interface{}, error) {

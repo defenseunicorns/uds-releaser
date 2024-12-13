@@ -69,10 +69,7 @@ func TestGenerateBaseSchema(t *testing.T) {
 		},
 	}
 
-	schema, err := generateBaseSchema(data)
-	if err != nil {
-		t.Fatalf("generateBaseSchema returned error: %v", err)
-	}
+	schema := generateBaseSchema(data)
 
 	if schema["type"] != "object" {
 		t.Errorf("expected top-level type to be object, got: %v", schema["type"])
