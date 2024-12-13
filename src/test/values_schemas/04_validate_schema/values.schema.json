@@ -1,0 +1,82 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "additionalNetworkAllow": {
+      "items": {
+        "additionalProperties": false,
+        "oneOf": [
+          {
+            "properties": {
+              "remoteGenerated": {
+                "not": {}
+              }
+            },
+            "required": [
+              "remoteNamespace",
+              "remoteSelector"
+            ]
+          },
+          {
+            "properties": {
+              "remoteNamespace": {
+                "not": {}
+              },
+              "remoteSelector": {
+                "not": {}
+              }
+            },
+            "required": [
+              "remoteGenerated"
+            ]
+          }
+        ],
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "direction": {
+            "enum": [
+              "Egress",
+              "Ingress"
+            ],
+            "type": "string"
+          },
+          "port": {
+            "type": "number"
+          },
+          "remoteGenerated": {
+            "enum": [
+              "Anywhere",
+              "CloudMetadata",
+              "IntraNamespace",
+              "KubeAPI"
+            ],
+            "type": "string"
+          },
+          "remoteNamespace": {
+            "type": "string"
+          },
+          "remoteSelector": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "selector": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "direction",
+          "selector"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "type": "object"
+}
