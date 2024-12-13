@@ -28,24 +28,10 @@ func GenerateSchemas(baseDir string) error {
 		outputFile := filepath.Join(filepath.Dir(valuesFile), "values.schema.json")
 		message.Infof("Generating schema for %s...\n", valuesFile)
 
-		// Convert YAML to JSON
-		jsonData, err := yamlToJSON(valuesFile)
-		if err != nil {
-			return fmt.Errorf("failed to convert YAML to JSON for %s: %w", valuesFile, err)
-		}
-
-		// Generate schema
-		baseSchema, err := generateBaseSchema(jsonData)
-		if err != nil {
-			return fmt.Errorf("failed to generate schema for %s: %w", valuesFile, err)
-		}
-
-		// Add custom schema
-		customSchema, err := loadCustomSchema()
+		baseSchema, err := buildSchemaForValuesFile(valuesFile)
 		if err != nil {
 			return err
 		}
-		baseSchema["properties"].(map[string]interface{})["additionalNetworkAllow"] = customSchema
 
 		// Write schema to file
 		outputData, err := json.MarshalIndent(baseSchema, "", "  ")
@@ -73,24 +59,10 @@ func CheckSchemas(baseDir string) error {
 		outputFile := filepath.Join(filepath.Dir(valuesFile), "values.schema.json")
 		message.Infof("Checking schema for %s...\n", valuesFile)
 
-		// Convert YAML to JSON
-		jsonData, err := yamlToJSON(valuesFile)
-		if err != nil {
-			return fmt.Errorf("failed to convert YAML to JSON for %s: %w", valuesFile, err)
-		}
-
-		// Generate schema
-		baseSchema, err := generateBaseSchema(jsonData)
-		if err != nil {
-			return fmt.Errorf("failed to generate schema for %s: %w", valuesFile, err)
-		}
-
-		// Add custom schema
-		customSchema, err := loadCustomSchema()
+		baseSchema, err := buildSchemaForValuesFile(valuesFile)
 		if err != nil {
 			return err
 		}
-		baseSchema["properties"].(map[string]interface{})["additionalNetworkAllow"] = customSchema
 
 		// Read existing schema
 		if _, err := os.Stat(outputFile); errors.Is(err, os.ErrNotExist) {
@@ -124,31 +96,61 @@ func CheckSchemas(baseDir string) error {
 	return nil
 }
 
+func buildSchemaForValuesFile(valuesFile string) (map[string]interface{}, error) {
+	// Convert YAML to JSON
+	jsonData, err := yamlToJSON(valuesFile)
+	if err != nil {
+		return nil, fmt.Errorf("failed to convert YAML to JSON for %s: %w", valuesFile, err)
+	}
+
+	// Generate schema
+	baseSchema, err := generateBaseSchema(jsonData)
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate schema for %s: %w", valuesFile, err)
+	}
+
+	// Add custom schema
+	customSchemas, err := LoadCustomSchemas()
+	if err != nil {
+		return nil, err
+	}
+	replaceNestedSchemas(baseSchema, customSchemas)
+
+	return baseSchema, nil
+}
+
+func replaceNestedSchemas(base map[string]interface{}, custom map[string]interface{}) {
+	if props, ok := base["properties"].(map[string]interface{}); ok {
+		for k, v := range props {
+			if customVal, exists := custom[k]; exists {
+				props[k] = customVal
+			} else if nestedMap, isMap := v.(map[string]interface{}); isMap {
+				replaceNestedSchemas(nestedMap, custom)
+			}
+		}
+	}
+}
+
 func diffSchemas(existing, generated string) string {
-	// Parse existing schema into a map
 	var existingMap map[string]interface{}
 	if err := json.Unmarshal([]byte(existing), &existingMap); err != nil {
 		return fmt.Sprintf("Error parsing existing schema: %v", err)
 	}
 
-	// Parse generated schema into a map
 	var generatedMap map[string]interface{}
 	if err := json.Unmarshal([]byte(generated), &generatedMap); err != nil {
 		return fmt.Sprintf("Error parsing generated schema: %v", err)
 	}
 
-	// Create a new JSON differ
 	differ := gojsondiff.New()
 	diff := differ.CompareObjects(existingMap, generatedMap)
 
-	// Check if differences exist
 	if !diff.Modified() {
 		return "No differences found."
 	}
 
-	// Format differences as ASCII
-	formatter := formatter.NewAsciiFormatter(existingMap, formatter.AsciiFormatterConfig{})
-	difference, err := formatter.Format(diff)
+	asciiFormatter := formatter.NewAsciiFormatter(existingMap, formatter.AsciiFormatterConfig{})
+	difference, err := asciiFormatter.Format(diff)
 	if err != nil {
 		return fmt.Sprintf("Error formatting differences: %v", err)
 	}
@@ -203,10 +205,8 @@ func mapToSchema(data map[string]interface{}) map[string]interface{} {
 				"additionalProperties": false,
 			}
 		case []interface{}:
-			// Handle arrays
 			items := map[string]interface{}{}
 			if len(v) > 0 {
-				// Infer schema from the first item
 				items = mapToSchema(map[string]interface{}{"item": v[0]})["item"].(map[string]interface{})
 			}
 			properties[key] = map[string]interface{}{
@@ -217,8 +217,7 @@ func mapToSchema(data map[string]interface{}) map[string]interface{} {
 			properties[key] = map[string]interface{}{
 				"type": "string",
 			}
-		case float64, int, uint64:
-			// All numeric values are mapped to "type": "number"
+		case float64, int, uint64, int64:
 			properties[key] = map[string]interface{}{
 				"type": "number",
 			}
@@ -231,31 +230,43 @@ func mapToSchema(data map[string]interface{}) map[string]interface{} {
 				"type": "null",
 			}
 		default:
-			// Ensure that raw values are not left as-is
 			properties[key] = map[string]interface{}{
-				"type": fmt.Sprintf("%T", value), // Fallback to type detection
+				"type": fmt.Sprintf("%T", value),
 			}
 		}
 	}
 	return properties
 }
 
-// LoadCustomSchema loads the `custom_schema.json` file from the embedded filesystem.
-func loadCustomSchema() (map[string]interface{}, error) {
-	// The path within the embedded filesystem
-	customSchemaPath := "schemas/custom_schema.json"
+func LoadCustomSchemas() (map[string]interface{}, error) {
+	schemas := make(map[string]interface{})
 
-	// Read the file using the embedded filesystem
-	data, err := schemasFS.ReadFile(customSchemaPath)
+	entries, err := schemasFS.ReadDir("schemas")
 	if err != nil {
-		return nil, fmt.Errorf("failed to load custom schema: %w", err)
+		return nil, fmt.Errorf("failed to read schemas directory: %w", err)
 	}
 
-	// Parse the JSON data
-	var schema map[string]interface{}
-	if err := json.Unmarshal(data, &schema); err != nil {
-		return nil, fmt.Errorf("failed to parse custom schema: %w", err)
+	for _, entry := range entries {
+		if entry.IsDir() {
+			continue
+		}
+
+		fileName := entry.Name()
+		if filepath.Ext(fileName) == ".json" {
+			data, err := schemasFS.ReadFile("schemas/" + fileName)
+			if err != nil {
+				return nil, fmt.Errorf("failed to read schema file %s: %w", fileName, err)
+			}
+
+			var schema interface{}
+			if err := json.Unmarshal(data, &schema); err != nil {
+				return nil, fmt.Errorf("failed to parse schema file %s: %w", fileName, err)
+			}
+
+			baseName := strings.TrimSuffix(fileName, filepath.Ext(fileName))
+			schemas[baseName] = schema
+		}
 	}
 
-	return schema, nil
+	return schemas, nil
 }

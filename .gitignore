@@ -34,3 +34,4 @@ uds-pk
 # testing
 src/test/sandbox/
 src/test/values_schemas/03_generate_schema/values.schema.json
+src/test/values_schemas/05_generate_schema_nested_custom/values.schema.json
