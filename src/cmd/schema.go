@@ -49,7 +49,7 @@ func checkSchemas() *cobra.Command {
 		Aliases: []string{"v"},
 		Short:   "Check if JSON schemas are up-to-date for all values.yaml files in a base directory.",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if err := helmSchema.CheckSchemas(baseDir); err != nil {
+			if err := helmSchema.ValidateSchemas(baseDir); err != nil { //TODO(ewyles) -- Renamed this to ValidateSchemas to match the cli verb name
 				message.WarnErrf(err, "Failed to check schemas for %s: \n%s", baseDir, err.Error())
 				rootCmd.SilenceUsage = true
 				os.Exit(1)
